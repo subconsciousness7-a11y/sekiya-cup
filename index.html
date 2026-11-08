@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>関谷塾杯 トーナメント表</title>
+</head>
+<body>
+<p id="ld" style="font-family:sans-serif;text-align:center;margin-top:40vh;color:#555">読み込み中…</p>
+<script>
+// 関谷塾杯 トーナメント表の入口。画面と記録は、Googleの係から取ってきます。
+window.AW_API = "https://script.google.com/macros/s/AKfycbzLbIkJiRFJPghSP-r5-HM2BDNgbh2WpGhYZ7AS1DmFyrHBpFQOEfJcU1ogaPEQGHIL/exec";
+fetch(window.AW_API + "?fn=html")
+  .then(function (r) { return r.text(); })
+  .then(function (h) { document.open(); document.write(h); document.close(); })
+  .catch(function () { document.getElementById("ld").textContent = "読み込めませんでした。電波のよいところで、ページを開き直してください。"; });
+</script>
+</body>
+</html>
