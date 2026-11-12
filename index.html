@@ -1,19 +1,1796 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>関谷塾杯 トーナメント表</title>
-</head>
-<body>
-<p id="ld" style="font-family:sans-serif;text-align:center;margin-top:40vh;color:#555">読み込み中…</p>
-<script>
-// 関谷塾杯 トーナメント表の入口。画面と記録は、Googleの係から取ってきます。
-window.AW_API = "https://script.google.com/macros/s/AKfycbzLbIkJiRFJPghSP-r5-HM2BDNgbh2WpGhYZ7AS1DmFyrHBpFQOEfJcU1ogaPEQGHIL/exec";
-fetch(window.AW_API + "?fn=html")
-  .then(function (r) { return r.text(); })
-  .then(function (h) { document.open(); document.write(h); document.close(); })
-  .catch(function () { document.getElementById("ld").textContent = "読み込めませんでした。電波のよいところで、ページを開き直してください。"; });
-</script>
-</body>
-</html>
+<meta name="description" content="アームレスリング大会「関谷塾杯」の出場登録と、試合結果・トーナメント表を見るためのページです。">
+<script>window.AW_API = "https://script.google.com/macros/s/AKfycbzLbIkJiRFJPghSP-r5-HM2BDNgbh2WpGhYZ7AS1DmFyrHBpFQOEfJcU1ogaPEQGHIL/exec";</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
+<style>
+:root{--ink:#16181d;--sub:#6b7280;--line:#e5e7eb;--bg:#f4f5f7;--card:#fff;--red:#d62d2d;--navy:#1d2a44;--w:#1f6feb;--l:#e07b00;--ok:#1a8f4e}
+*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
+#app{max-width:760px;margin:0 auto;padding-bottom:130px}
+header{background:var(--navy);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ttl{font-weight:900;font-size:20px;line-height:1.2}.ttl small{display:block;font-size:12px;font-weight:500;opacity:.75}
+.live{font-size:12px;background:rgba(255,255,255,.12);padding:5px 10px;border-radius:99px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.live i{width:8px;height:8px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.25)}.live.off{opacity:.8}
+nav{display:flex;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+nav button{flex:1;border:0;background:none;padding:13px 0;font:inherit;font-weight:700;color:var(--sub);border-bottom:3px solid transparent}
+nav button.on{color:var(--red);border-bottom-color:var(--red)}
+main{padding:12px}
+h2{font-size:15px;margin:18px 4px 8px;color:var(--navy)}
+.card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.center{text-align:center}.sub{color:var(--sub);font-size:13px}.big{font-size:17px;font-weight:700}
+.lbl{font-size:12px;color:var(--sub);font-weight:700;margin:12px 0 6px}.lbl:first-child{margin-top:0}
+.mc{background:#fff;border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.06);border-left:5px solid var(--red)}
+.mc.empty{border-left-color:var(--line);padding-bottom:12px}
+.mh{display:flex;align-items:center;gap:8px;padding:10px 12px 0;font-size:13px}.mh b{font-size:15px}.mh span:not(.pb){color:var(--sub)}
+.pb{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:auto;color:#fff}
+.pb-W{background:var(--w)}.pb-L{background:var(--l)}.pb-F,.pb-F2{background:var(--red)}
+.vs{display:flex;align-items:stretch;gap:8px;padding:10px 12px 12px}.v{align-self:center;font-weight:900;color:var(--red);font-size:13px}
+.pl{flex:1;font-size:19px;font-weight:700;text-align:center;padding:10px 4px;border-radius:10px;background:#f7f7f9;word-break:break-all}
+.pl.tap{border:2px solid var(--line);font:inherit;font-size:19px;font-weight:700;color:var(--ink);cursor:pointer}
+.pl.tap:active{background:#ffe9e9;border-color:var(--red)}.pl small{display:block;font-size:11px;color:var(--sub);font-weight:500;margin-top:2px}
+.row{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}.row:first-of-type{border-top:0}
+.grow{flex:1}.sm{font-size:12px;color:var(--sub)}.w6{min-width:72px}
+.n{width:22px;height:22px;border-radius:50%;background:var(--bg);font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.now{font-size:11px;color:#fff;background:var(--ok);padding:2px 8px;border-radius:99px}
+.lose{color:var(--sub)}em{font-style:normal;font-size:11px;color:var(--red);margin-left:4px}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 4px;font:inherit;font-size:13px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.chip small{font-weight:400;color:var(--sub);font-size:11px}.chip.on{border-color:var(--red);background:#fff4f4;color:var(--red)}.chip.dim{opacity:.5}
+.dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%}.dot.go{background:var(--w)}.dot.ready,.dot.fin{background:var(--red)}.dot.done{background:var(--ok)}
+.bh{display:flex;align-items:center;justify-content:space-between}.bh b{font-size:18px}
+.st{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--bg)}.st.go{color:var(--w)}.st.ready,.st.fin{color:var(--red)}.st.done{color:var(--ok)}
+.rank{display:grid;gap:6px;margin:12px 0}.rank div{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;font-weight:700;font-size:16px}
+.rank div>span:first-child{font-size:12px;padding:3px 8px;border-radius:6px;color:#fff}.r1{background:#fff8e1}.r1>span:first-child{background:#c9a227}.r2{background:#f3f4f6}.r2>span:first-child{background:#8b95a5}.r3{background:#fbeee6}.r3>span:first-child{background:#b06d3b}
+.pcs{display:flex;flex-wrap:wrap;gap:6px}.pc{font-size:14px;padding:6px 10px;border-radius:99px;background:var(--bg);display:inline-flex;align-items:center;gap:6px}
+.pc.w{background:#e8f0fe;color:#174ea6}.pc.l{background:#fff1e0;color:#8a4b00}.pc.o{color:var(--sub)}
+.pc button{border:0;background:#fff;color:var(--red);font:inherit;font-size:11px;padding:2px 7px;border-radius:99px}
+input[type=text]{width:100%;font:inherit;font-size:17px;padding:12px;border:1px solid var(--line);border-radius:10px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}.opt{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;font:inherit;font-weight:700;font-size:14px}
+.opt.off.on{background:#8b95a5;border-color:#8b95a5;color:#fff}.opt.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:700;font-size:16px;margin-top:12px;cursor:pointer}
+.btn.main{background:var(--red);color:#fff}.btn.go{background:var(--ok);color:#fff}.btn.ghost{background:var(--bg);color:var(--ink)}
+.cg{margin-top:10px}.cg>b{font-size:13px;color:var(--navy)}.x{border:0;background:var(--bg);color:var(--red);font:inherit;font-size:12px;padding:4px 10px;border-radius:8px}
+.foot{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;gap:6px;justify-content:center;z-index:6}
+.foot.sub{display:block;text-align:center}
+.btn.sm2{width:auto;margin:0;padding:9px 12px;font-size:13px;background:var(--bg);color:var(--ink)}.btn.sm2.on{background:var(--navy);color:#fff}.btn.sm2.danger{color:var(--red)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:20;padding:20px}
+.md{background:#fff;border-radius:16px;padding:20px;max-width:380px;width:100%;font-size:16px;line-height:1.6}.md small{color:var(--sub)}
+.mb{display:flex;gap:8px}.mb .btn{flex:1}
+.toast{pointer-events:none;position:fixed;left:50%;transform:translateX(-50%);bottom:76px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:30;max-width:90%}
+.busy{position:fixed;top:10px;right:10px;background:var(--navy);color:#fff;font-size:12px;padding:5px 10px;border-radius:8px;z-index:30}
+.tg{background:#fff;border-radius:14px;margin-bottom:12px;padding:10px 10px 4px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.tg .mc{box-shadow:none;border:1px solid var(--line);border-left:5px solid var(--red)}.tg .mc.empty{border-left-color:var(--line)}
+.th{display:flex;align-items:center;gap:8px;padding:2px 2px 8px;flex-wrap:wrap}.th b{font-size:17px;color:var(--navy)}
+.tks{display:flex;gap:4px;flex-wrap:wrap}.tk{font-size:11px;background:var(--navy);color:#fff;padding:2px 8px;border-radius:99px}.tk.dn{background:var(--line);color:var(--sub);text-decoration:line-through}
+.nx{display:flex;gap:8px;align-items:center;padding:0 4px 8px;font-size:13px;flex-wrap:wrap}.nx span:not(.sm){background:var(--bg);padding:4px 8px;border-radius:8px}.nx small{display:block;font-size:10px;color:var(--sub)}
+.pe{margin-top:8px}.pe>b{font-size:13px;color:var(--navy)}.x2{border:0;background:var(--bg);font:inherit;font-size:12px;padding:5px 8px;border-radius:8px}.x2:disabled{opacity:.3}
+.bk{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 8px;-webkit-overflow-scrolling:touch}
+.col{display:flex;flex-direction:column;min-width:138px;max-width:150px;flex-shrink:0}
+.ch{font-size:12px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:6px;background:var(--bg);border-radius:6px;padding:3px}
+.its{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:10px}
+.bx{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;position:relative}
+.bx.playing{border:2px solid var(--ok);box-shadow:0 0 0 3px rgba(26,143,78,.15)}.bx.bye{border-style:dashed}.bx.adv{border:2px solid var(--red)}
+.br-r{display:flex;justify-content:space-between;align-items:center;padding:7px 9px;font-size:14px;font-weight:500;border-top:1px solid var(--line)}.br-r:first-child,.bt+.br-r{border-top:0}
+.br-r span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br-r.win{font-weight:900;background:#fff8e1}.br-r.lose{color:#a0a6b0;text-decoration:line-through}
+.br-r i{font-style:normal;font-size:10px;background:var(--red);color:#fff;border-radius:4px;padding:1px 5px}
+.bt{font-size:10px;text-align:center;color:var(--sub);background:var(--bg);padding:2px}.bt.now{background:var(--ok);color:#fff;font-weight:700}
+.sw{text-align:right;font-size:11px}
+.rec{display:block;font-size:12px;font-weight:500;color:var(--navy);margin-top:2px}
+.rec2{font-size:14px;font-weight:700;min-width:80px;white-space:nowrap;text-align:right}
+.stg{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--bg);min-width:76px;text-align:center}
+.s-本戦{background:#e8f0fe;color:#174ea6}.s-敗者復活戦{background:#fff1e0;color:#8a4b00}.s-1位{background:#c9a227;color:#fff}.s-2位{background:#8b95a5;color:#fff}.s-3位{background:#b06d3b;color:#fff}
+.dimrow{color:var(--sub)}
+.rank em.rk{margin-left:auto;color:var(--ink);font-size:14px;font-weight:700}
+.s-rank{background:#eef0f3;color:var(--ink)}
+.guide{font-size:15px;font-weight:700;color:var(--navy);margin:2px 4px 8px}
+.nmrow{display:flex;gap:8px}.nmrow .fi{flex:1;min-width:0}
+input.fi{width:100%;font:inherit;font-size:17px;padding:12px;border:1px solid var(--line);border-radius:10px}
+@media (min-width:700px){#app{max-width:980px}.chips{grid-template-columns:repeat(6,1fr)}.col{min-width:170px;max-width:190px}.pl{font-size:22px}}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.fw{flex:1;min-width:0}.sl{font-size:12px;color:var(--sub);margin-bottom:4px}
+.orow{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line)}.orow.lock .grow b{color:var(--sub)}
+.onum{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.orow.lock .onum{background:var(--line);color:var(--sub)}
+.os{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-top:3px}.os.done{background:var(--bg);color:var(--sub)}.os.now{background:var(--ok);color:#fff}.os.wait{background:#e8f0fe;color:#174ea6}
+.x2{padding:8px 10px;font-size:13px}
+.hero{padding:24px 4px;text-align:center}.hero .big{font-size:22px;margin:8px 0 2px}
+.rolebtn{display:block;width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:16px;padding:18px;margin-top:14px;font:inherit;cursor:pointer}
+.rolebtn b{font-size:22px;display:block}.rolebtn span{font-size:13px;color:var(--sub)}.rolebtn small{display:block;font-size:13px;color:var(--sub);margin-top:6px}
+.rolebtn.staff{border-color:var(--navy)}.rolebtn.desk b{color:var(--red)}.rolebtn.hq{background:#f7f8fb}
+.rolebtn:active{background:#fff4f4}
+.dh{display:flex;align-items:center;gap:10px;margin:4px 4px 12px}.dh b{font-size:28px;color:var(--navy)}.dh .tk{font-size:14px;padding:4px 12px}
+.ban{background:#eef0f3;color:var(--ink);font-size:13px;padding:8px 12px;text-align:center}.ban.warn{background:#fff3cd;color:#7a5600;font-weight:700}
+.bfix{display:block;width:100%;border:0;border-top:1px solid var(--line);background:#fff;color:var(--red);font:inherit;font-size:11px;padding:3px}
+.red{color:var(--red)}.mb.col2{flex-direction:column}
+.foot{flex-wrap:wrap}
+.cpick{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:14px;padding:14px;margin-top:10px;font:inherit;cursor:pointer;flex-wrap:wrap}
+.cpick b{font-size:19px}.cpick .os{margin:0 0 0 auto}.cpick:disabled{opacity:.45}.cpick.rec{border-color:var(--red);background:#fff8f8}
+.os.rec{background:var(--red);color:#fff}.thb{margin-left:auto}.center{text-align:center}
+nav button small{display:block;font-size:11px;font-weight:500;line-height:1.1}nav button{line-height:1.25}
+.card.editing{border:2px solid var(--red)}.opt:disabled{opacity:.5}
+.dbl{font-size:10px;background:#fff1e0;color:#8a4b00;padding:2px 6px;border-radius:99px;font-weight:700}.dblnote{font-size:12px;color:#8a4b00;font-weight:700;margin-top:6px}
+ruby{ruby-position:over}rt{font-size:.5em;font-weight:500;color:var(--sub);letter-spacing:0}
+.sl.kl{margin-top:6px}input.fi.kana{font-size:15px;padding:9px 12px}
+.dj{display:inline-block;font-size:11px;font-weight:500;color:var(--sub);background:var(--bg);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+#f_dojo{margin-bottom:4px}
+.nmw{display:flex;flex-direction:column;align-items:flex-start;flex:1;min-width:0}.nmw .dj{margin:3px 0 0}
+.rank div{align-items:center}.rank em.rk{white-space:nowrap}.rank span:first-child{flex-shrink:0;white-space:nowrap}
+.hq{border-top:1px solid var(--line);padding:12px 0;font-size:14px;line-height:1.6}.hq b{display:block;font-size:15px;color:var(--navy);margin-bottom:2px}.hq div b{display:inline;color:var(--red)}
+.btn.sm2.help{background:#fff3cd;color:#7a5600}
+.restext{width:100%;min-height:220px;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:10px}
+.flash{background:var(--red);color:#fff;font-size:18px;line-height:1.5;font-weight:900;text-align:center;padding:16px;border-radius:14px;margin-bottom:12px;animation:fl .6s ease-in-out 0s 6 alternate}
+@keyframes fl{from{opacity:1;transform:scale(1)}to{opacity:.55;transform:scale(1.02)}}
+.flashcard .mc{box-shadow:0 0 0 4px rgba(214,45,45,.5);animation:fc .6s ease-in-out 0s 6 alternate}
+@keyframes fc{from{box-shadow:0 0 0 4px rgba(214,45,45,.6)}to{box-shadow:0 0 0 10px rgba(214,45,45,.1)}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--sub);margin:0 4px 10px}.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend .dot{position:static;display:inline-block;width:9px;height:9px;border-radius:50%}.dot.none{background:#d0d4db}
+.rolebtn.entry{border-color:var(--ok)}.rolebtn.entry b{color:var(--ok)}
+.feenow{background:#fff8e1;border-radius:10px;padding:10px 12px;margin-top:12px;font-size:15px}.feenow small{display:block;font-size:11px;color:var(--sub)}
+.bdgs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.bdg{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px}
+.bdg.ok{background:#e6f4ec;color:var(--ok)}.bdg.ng{background:#fde8e8;color:var(--red)}.bdg.done{background:var(--ok);color:#fff}
+.pno{min-width:30px;height:30px;border-radius:8px;background:var(--navy);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prow{align-items:flex-start}.pbtns{display:flex;flex-direction:column;gap:4px;align-items:stretch}.payb{background:var(--red);color:#fff;font-weight:700}
+.tot{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:6px}.tot div{background:var(--bg);border-radius:10px;padding:10px;text-align:center}.tot b{display:block;font-size:20px}.tot span{font-size:12px;color:var(--sub)}
+.paybox{text-align:center}.payamt{font-size:26px;font-weight:900;color:var(--red);margin:12px 0}.btn.pp{background:#e60033}
+.mycard{text-align:center;border:3px solid var(--line)}.mycard.ok{border-color:var(--ok)}.mynohead{font-size:12px;color:var(--sub)}.myno{font-size:56px;font-weight:900;color:var(--navy);line-height:1.1}
+.myname{font-size:22px;font-weight:700;margin:6px 0}.myfee{font-size:22px;margin:12px 0 6px}.myfee b{color:var(--red);font-size:28px}
+.mystat{background:#fff8e1;border-radius:10px;padding:10px;margin-top:10px;font-weight:700}.mystat small{display:block;font-weight:400;font-size:12px;color:var(--sub)}.mystat.ok{background:var(--ok);color:#fff;font-size:20px}.mystat.ok small{color:#e6f4ec}
+.btn.red2{color:var(--red);border:2px solid var(--red);background:#fff}.big2{font-size:18px}
+.rq{border:2px solid var(--navy)}.bigsearch{font-size:24px!important;text-align:center;letter-spacing:2px}
+.srchnote{font-size:12px;background:#e8f0fe;color:#174ea6;border-radius:8px;padding:6px 10px;margin-bottom:6px}
+.donemark{width:64px;height:64px;border-radius:50%;background:var(--ok);color:#fff;font-size:38px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}.donettl{font-size:22px;font-weight:900;color:var(--ok);margin-bottom:10px}
+.srow{display:flex;gap:8px;align-items:stretch}.srow .fi{flex:1;min-width:0}.sbtn{flex:0 0 auto;border:0;border-radius:12px;padding:0 20px;font:inherit;font-weight:800;font-size:17px;background:var(--red);color:#fff;cursor:pointer}.srchnote .x2{margin-left:8px}
+button rt{color:inherit;font-size:.6em;font-weight:700}
+.rolebtn.pick{border-color:var(--navy);background:#fff}.rolebtn.pick b{color:var(--navy)}
+.solo{background:#fff8e1;border:3px solid var(--red);border-radius:14px;padding:12px 14px;margin:10px 12px}.soloh{font-weight:900;color:var(--red);font-size:18px;margin-bottom:6px}.solorow{border-top:1px solid #f0d9a0;padding-top:10px;margin-top:10px}.solobtns .btn{margin-top:8px;padding:12px}
+.pend{font-size:.6em;color:var(--sub);font-weight:700}
+.refresh{background:#e8f0fe;color:#1a4fb4}.btn:disabled{opacity:.45;cursor:not-allowed}
+.djchips{display:flex;flex-wrap:wrap;gap:6px}.djchip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}.djchip:active{background:#fff4f4}
+.djchip.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:700}@keyframes flashin{0%{background:#fff3b0;box-shadow:0 0 0 4px #ffe066}100%{background:#fff;box-shadow:none}}.fi.flashin{animation:flashin 1.4s ease-out}
+.rolebtn.practice{border-color:#c9a227;background:#fffbea}.rolebtn.practice b{color:#8a6a00}.practiceban{background:#fff3cd;color:#7a5600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.opt small.ongo{display:block;font-size:10px;font-weight:700;color:var(--red)}
+.ver{width:100%;text-align:center;font-size:11px;color:var(--sub);margin-top:2px}
+</style></head><body><div id="app"></div><div id="toastbox"></div><script>
+// ===== トーナメントの計算部分（全員の画面で同じ結果になるように、操作の記録から毎回計算し直す） =====
+const TABLES = 3;
+const CLS = [["S-75","S −75"],["S+75","S +75"],["A","A 無差別"],["B","B 無差別"],["C-75","C −75"],["C+75","C +75"]];
+const ARMS = [["R","右"],["L","左"]];
+const KEYS = [];
+CLS.forEach(c => ARMS.forEach(a => KEYS.push(c[0] + "_" + a[0])));
+const TNAME = ["A台","B台","C台"];
+const CLS_ORDER = ["C-75","C+75","B","A","S-75","S+75"];
+// 左を全部先に → そのあと右
+const DEFAULT_ORDER = [...CLS_ORDER.map(c => c + "_L"), ...CLS_ORDER.map(c => c + "_R")];
+const POOL = { W: "本戦", L: "敗者復活戦", F: "決勝", F2: "決勝 2試合目" };
+
+function clsLabel(c){ const x = CLS.find(v => v[0] === c); return x ? x[1] : c; }
+function armLabel(a){ return a === "R" ? "右" : a === "L" ? "左" : a; }
+function keyLabel(k){ const i = k.lastIndexOf("_"); return clsLabel(k.slice(0, i)) + " " + armLabel(k.slice(i + 1)); }
+
+function hstr(s){ let h = 1779033703 ^ s.length; for (let i = 0; i < s.length; i++){ h = Math.imul(h ^ s.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); } return h >>> 0; }
+function rngFrom(seed){ let a = seed >>> 0; return function(){ a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function shuffle(arr, rng){ const a = arr.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function pk(a, b){ return a < b ? a + "|" + b : b + "|" + a; }
+
+function freshState(){
+  const S = { players: {}, br: {}, m: [], tables: Array(TABLES).fill(null), started: false, finals: false, lastEnd: {}, finalOrder: [] };
+  KEYS.forEach(k => S.br[k] = { k, ent: {}, elim: [], played: {}, byes: [], rounds: { W: [], L: [] }, elimRd: {}, ready: false, champ: null, second: null, third: null, hasF: false });
+  S.order = DEFAULT_ORDER.slice(); S.tableKey = Array(TABLES).fill(null); S.claim = Array(TABLES).fill(null); S.autoAssign = false; S.idle = Array(TABLES).fill(0); S.soloAck = {};
+  return S;
+}
+
+function replay(evs){
+  let start = 0;
+  for (let i = evs.length - 1; i >= 0; i--) if (evs[i].type === "reset"){ start = i + 1; break; }
+  const S = freshState();
+  // 結果の修正：あとから「正しい勝者」を指定されたら、元の結果をその勝者に置きかえて計算し直す
+  S.fix = {};
+  for (let i = start; i < evs.length; i++) if (evs[i].type === "fix" && evs[i].target) S.fix[evs[i].target] = evs[i].w;
+  S.applied = 0; S.skipped = 0;
+  for (let i = start; i < evs.length; i++){
+    const ev = evs[i];
+    try { apply(S, ev); post(S, ev); } catch (e) { console.warn("skip", ev, e); }
+  }
+  return S;
+}
+
+// 受付：金額（片腕ワンハンド4,000円・両腕ツーハンド5,000円）、検量が必要か、エントリー完了か
+const FEE_ONE = 4000, FEE_TWO = 5000;
+function feeOf(p){
+  // 遅刻で出られなくなった腕（missed）は、料金に数えない
+  const arm = a => (p.en[a] || []).some(c => !(p.missed || []).includes(c + "_" + a));
+  return arm("L") && arm("R") ? FEE_TWO : FEE_ONE;
+}
+function handOf(p){ return feeOf(p) === FEE_TWO ? "ツーハンド" : "ワンハンド"; }
+// 1人だけのクラスの、ひとつ上のクラス（S +75 はなし）
+const UP = { "C-75": ["C+75"], "C+75": ["B"], "B": ["A"], "A": ["S-75", "S+75"], "S-75": ["S+75"], "S+75": [] };
+function upKeys(k){ const i = k.lastIndexOf("_"); return (UP[k.slice(0, i)] || []).map(c => c + "_" + k.slice(i + 1)); }
+// 試合開始のあとで、まだ相談が終わっていない「1人だけのクラス」
+function soloKeys(S){ return S.started ? KEYS.filter(k => Object.keys(S.br[k].ent).length === 1 && !S.soloAck[k] && !begun(S, k)) : []; }
+// 道場名を比べるための形：全角半角・大文字小文字・空白・「道場」「ジム」などの違いはそろえる
+const DOJO_WORDS = ["アームレスリング", "armwrestling", "armwrestle", "同好会", "道場", "ジム", "クラブ", "チーム", "腕相撲", "team", "gym", "club", "部", "会"];
+function dojoKey(d){
+  let s = String(d || "").normalize("NFKC").toLowerCase().replace(/[\s・\-_.　]+/g, "");
+  if (!s || ["無所属", "なし", "無し", "none", "no", "-", "ー"].includes(s)) return "";   // 無所属どうしは「同じ道場」にしない
+  const base = s;
+  let changed = true;
+  while (changed){ changed = false;
+    for (const w of DOJO_WORDS){ if (s.length > w.length && s.endsWith(w)){ s = s.slice(0, -w.length); changed = true; } if (s.length > w.length && s.startsWith(w)){ s = s.slice(w.length); changed = true; } } }
+  return s || base;
+}
+function needWeigh(p){ return p.keys.some(k => k.startsWith("S-75_") || k.startsWith("C-75_")); }
+function entryOK(p){ return !!p.paid && (!needWeigh(p) || p.weighed); }
+// 試合開始のあとに受付が終わった人：まだ始まっていないクラスなら入れる
+function lateJoin(S, pid){
+  const p = S.players[pid];
+  if (!S.started || !p.excluded || !entryOK(p)) return;
+  p.excluded = false; p.missed = [];
+  p.keys.forEach(k => { if (begun(S, k)) p.missed.push(k); else { S.br[k].ent[pid] = { losses: 0, byes: 0, out: false, wd: false }; rebuild(S, k); } });
+  p.keys = p.keys.filter(k => !p.missed.includes(k));
+}
+// このクラスの試合が1試合でも始まっているか
+function begun(S, k){ const b = S.br[k]; return !!b.hasF || S.m.some(m => m.k === k && (m.st === "p" || m.st === "d")); }
+// まだ始まっていないクラスの組み合わせを作り直す（試合開始のあとのクラス変更用）
+function rebuild(S, k){
+  const b = S.br[k];
+  S.m.forEach(m => { if (m.k === k && m.st === "q") m.st = "x"; });
+  Object.assign(b, { elim: [], played: {}, byes: [], rounds: { W: [], L: [] }, elimRd: {}, ready: false, champ: null, second: null, third: null, hasF: false });
+  Object.keys(b.ent).forEach(p => { b.ent[p] = { losses: 0, byes: 0, out: false, wd: false }; });
+}
+// 腕ごとのクラス（ダブルエントリーなら2つ以上）
+function normEntries(e){
+  const en = {};
+  ["L","R"].forEach(a => {
+    const v = e && e[a]; const arr = (Array.isArray(v) ? v : v ? [v] : []).filter((c, i, x) => CLS.some(z => z[0] === c) && x.indexOf(c) === i);
+    if (arr.length) en[a] = arr;
+  });
+  return en;
+}
+function entryKeys(en){ const ks = []; ["L","R"].forEach(a => (en[a] || []).forEach(c => ks.push(c + "_" + a))); return ks; }
+function addPlayer(S, p){
+  if (!p || !p.pid || S.players[p.pid]) return;
+  const cut = v => String(v || "").trim().slice(0, 20);
+  const last = cut(p.last), first = cut(p.first), enLast = cut(p.enLast), enFirst = cut(p.enFirst);
+  const legacy = cut(p.name);
+  if (!last && !enLast && !legacy) return;
+  let en = {};
+  if (p.entries) en = normEntries(p.entries);
+  else (p.arms || []).forEach(a => { if ((a === "R" || a === "L") && CLS.some(c => c[0] === p.cls)) en[a] = [p.cls]; });
+  const keys = entryKeys(en);
+  if (!keys.length) return;
+  const latin = v => /^[\x00-\x7F]+$/.test(v);
+  const full = last ? (first ? (latin(last) && latin(first) ? first + " " + last : last + " " + first) : last) : enLast ? (enFirst ? enFirst + " " + enLast : enLast) : legacy;
+  const short = last || enLast || legacy;
+  // 受付番号：サーバーが決めた番号があればそれを使う（あとから変わらない）。なければ仮の番号
+  const sno = +p.no > 0 ? +p.no : 0;
+  S.seq = sno ? Math.max(S.seq || 0, sno) : (S.seq || 0) + 1;
+  S.players[p.pid] = { name: full, short, full, last, first, enLast, enFirst, kLast: cut(p.kLast), kFirst: cut(p.kFirst), dojo: String(p.dojo || "").trim().slice(0, 30), en, keys,
+    no: sno || S.seq, pend: !sno, self: !!p.self, paid: p.paid || null, weighed: !!p.weighed, excluded: false };
+  // 試合開始のあとに新しく登録した人：受付（入金・検量）が終わってから、まだ始まっていないクラスにだけ入る
+  if (S.started){ S.players[p.pid].excluded = true; lateJoin(S, p.pid); return; }
+  keys.forEach(k => { S.br[k].ent[p.pid] = { losses: 0, byes: 0, out: false, wd: false }; });
+}
+
+function apply(S, ev){
+  switch (ev.type){
+    case "add": addPlayer(S, ev); break;
+    case "addMany": (ev.list || []).forEach(p => addPlayer(S, p)); break;
+    case "edit": {
+      // 登録の修正：名前はいつでも、クラスは試合開始の前だけ
+      const p = S.players[ev.pid]; if (!p) return;
+      const cut = v => String(v || "").trim().slice(0, 20);
+      const last = cut(ev.last), first = cut(ev.first);
+      if (last){
+        const latin = v => /^[\x00-\x7F]+$/.test(v);
+        p.last = last; p.first = first; p.short = last; p.kLast = cut(ev.kLast); p.kFirst = cut(ev.kFirst); p.dojo = String(ev.dojo || "").trim().slice(0, 30);
+        p.full = first ? (latin(last) && latin(first) ? first + " " + last : last + " " + first) : last;
+        p.name = p.full;
+      }
+      if (ev.entries){
+        const en = normEntries(ev.entries);
+        const keys = entryKeys(en);
+        if (!keys.length) return;
+        // 試合開始のあと：まだ1試合も始まっていないクラスどうしなら変更できる（組み合わせを作り直す）
+        const changed = keys.filter(k => !p.keys.includes(k)).concat(p.keys.filter(k => !keys.includes(k)));
+        if (p.excluded){ p.en = en; p.keys = keys; lateJoin(S, ev.pid); break; }
+        if (S.started && changed.some(k => begun(S, k))) return;
+        p.keys.forEach(k => delete S.br[k].ent[ev.pid]);
+        p.en = en; p.keys = keys;
+        keys.forEach(k => { S.br[k].ent[ev.pid] = { losses: 0, byes: 0, out: false, wd: false }; });
+        if (S.started) changed.forEach(k => rebuild(S, k));
+      }
+      break;
+    }
+    case "remove": {
+      const p = S.players[ev.pid]; if (!p) return;
+      // 試合開始のあとは、まだトーナメントに入っていない人（受付が終わっていない人）だけ取り消せる
+      if (S.started && !p.excluded) return;
+      p.keys.forEach(k => delete S.br[k].ent[ev.pid]);
+      delete S.players[ev.pid];
+      break;
+    }
+    case "start": {
+      S.started = true;
+      // 受付（入金・検量）が終わっていない人は、トーナメントに入れない
+      Object.keys(S.players).forEach(pid => { const p = S.players[pid]; if (!entryOK(p)){ p.excluded = true; p.keys.forEach(k => delete S.br[k].ent[pid]); } });
+      break;
+    }
+    // 1人だけのクラスで「出ない」：その腕のエントリーを取り消して、差額を返金
+    case "drop": {
+      const p = S.players[ev.pid]; if (!p || !p.keys.includes(ev.k) || begun(S, ev.k)) return;
+      const before = feeOf(p);
+      const arm = ev.k.slice(ev.k.lastIndexOf("_") + 1), cls = ev.k.slice(0, ev.k.lastIndexOf("_"));
+      delete S.br[ev.k].ent[ev.pid]; rebuild(S, ev.k);
+      p.en[arm] = (p.en[arm] || []).filter(c => c !== cls); if (!p.en[arm].length) delete p.en[arm];
+      p.keys = p.keys.filter(k => k !== ev.k);
+      const after = p.keys.length ? feeOf(p) : 0;
+      p.refund = (p.refund || 0) + (before - after);
+      (p.dropped = p.dropped || []).push(ev.k);
+      break;
+    }
+    // 1人だけのクラスを「このまま（試合なしで1位）」にする
+    case "soloack": S.soloAck[ev.k] = true; break;
+    case "pay": { const p = S.players[ev.pid]; if (!p) return; p.paid = ev.method === "paypay" ? "paypay" : "cash"; lateJoin(S, ev.pid); break; }
+    case "unpay": { const p = S.players[ev.pid]; if (!p || (S.started && !p.excluded)) return; p.paid = null; break; }
+    case "weigh": { const p = S.players[ev.pid]; if (!p) return; p.weighed = true; lateJoin(S, ev.pid); break; }
+    case "unweigh": { const p = S.players[ev.pid]; if (!p || (S.started && !p.excluded)) return; p.weighed = false; break; }
+    case "simulate": simulateAll(S, ev); break;
+    case "autoassign": S.autoAssign = !!ev.on; break;
+    case "claim": {
+      // 運営が「このクラスをこの台でやる」と選んだ
+      const k = ev.k, i = ev.table;
+      if (!KEYS.includes(k) || !(i >= 0 && i < TABLES) || !used(S, k) || prelimDone(S.br[k])) return;
+      if (!claimOK(S, k, i)) return;
+      for (let j = 0; j < TABLES; j++) if (S.claim[j] === k) S.claim[j] = null;
+      S.claim[i] = k;
+      break;
+    }
+    case "order": if (Array.isArray(ev.order)){ const o = ev.order.filter(k => KEYS.includes(k)); DEFAULT_ORDER.forEach(k => { if (!o.includes(k)) o.push(k); }); S.order = o; } break;
+    case "finals": if (S.started) S.finals = true; break;
+    case "result": {
+      const m = S.m[ev.mid];
+      const w = S.fix[ev.id] != null ? S.fix[ev.id] : ev.w;
+      // 組み合わせが変わっていたら（前の結果を直した影響）、この結果は使わない
+      if (!m || m.st === "d" || (w !== m.a && w !== m.b) || (ev.a && !((ev.a === m.a && ev.b === m.b) || (ev.a === m.b && ev.b === m.a)))){ S.skipped++; return; }
+      finish(S, m, w, ev.t, false);
+      m.evId = ev.id; S.applied++;
+      break;
+    }
+    case "withdraw": {
+      const p = S.players[ev.pid]; if (!p) return;
+      const keys = ev.k ? [ev.k] : p.keys;
+      keys.forEach(k => {
+        const b = S.br[k]; const e = b && b.ent[ev.pid];
+        if (!e || e.out || b.champ) return;
+        e.wd = true;
+        const m = S.m.find(x => x.k === k && (x.st === "q" || x.st === "p") && (x.a === ev.pid || x.b === ev.pid));
+        if (m) finish(S, m, m.a === ev.pid ? m.b : m.a, ev.t, true);
+        if (!e.out){ e.losses = 2; e.out = true; if (b.elimRd[ev.pid] == null) b.elimRd[ev.pid] = e.losses && b.rounds.L.length ? b.rounds.L.length - 1 : -1; }
+        if (!b.elim.includes(ev.pid) && b.champ !== ev.pid && b.second !== ev.pid) b.elim.push(ev.pid);
+        if (b.ready && !b.hasF){ b.ready = false; b.third = null; }
+      });
+      break;
+    }
+  }
+}
+
+function finish(S, m, w, t, wd){
+  m.st = "d"; m.w = w; m.wd = !!wd; m.te = t;
+  if (m.table != null){ S.tables[m.table] = null; S.idle[m.table] = t; }
+  const l = m.a === w ? m.b : m.a;
+  const b = S.br[m.k];
+  b.played[pk(m.a, m.b)] = 1;
+  const who = p => (S.players[p] ? S.players[p].full : p);
+  S.lastEnd[who(w)] = t; S.lastEnd[who(l)] = t;
+  const el = b.ent[l], ew = b.ent[w];
+  if (m.pool === "W" || m.pool === "L"){
+    el.losses = wd ? 2 : el.losses + 1;
+    if (el.losses >= 2 && !el.out){ el.out = true; b.elim.push(l); b.elimRd[l] = m.pool === "L" ? m.rd : -1; }
+  } else {
+    if (m.pool === "F" && !wd && el.losses === 0 && ew.losses === 1){
+      el.losses = 1;
+      const nm = { id: S.m.length, k: m.k, pool: "F2", a: m.a, b: m.b, st: "q", table: null, w: null, t0: t };
+      S.m.push(nm); S.finalOrder.push(nm.id);
+    } else {
+      el.losses = 2; el.out = true;
+      b.champ = w; b.second = l;
+    }
+  }
+}
+
+// テスト用：決勝まで全部ランダムで終わらせる（記録は1件だけ）
+function simulateAll(S, ev){
+  if (!S.started) return;
+  const rng = rngFrom(hstr("sim" + ev.id));
+  S.autoAssign = true; assign(S);
+  for (let i = 0; i < 5000; i++){
+    let m = S.m.find(x => x.st === "p") || S.m.find(x => x.st === "q" && (x.pool === "W" || x.pool === "L"))
+      || S.finalOrder.map(j => S.m[j]).find(x => x.st !== "d");
+    if (!m){
+      if (!S.finals){ S.finals = true; post(S, { id: ev.id + "f" + i, t: ev.t }); continue; }
+      break;
+    }
+    finish(S, m, rng() < 0.5 ? m.a : m.b, ev.t + i * 0.001, false);
+    post(S, { id: ev.id + "_" + i, t: ev.t + i * 0.001 });
+  }
+}
+
+function post(S, ev){
+  if (!S.started) return;
+  const rng = rngFrom(hstr(String(ev.id)));
+  KEYS.forEach(k => pair(S, S.br[k], rng, ev.t));
+  if (S.finals){
+    KEYS.forEach(k => {
+      const b = S.br[k];
+      if (b.ready && !b.hasF && !b.champ){
+        const alive = Object.keys(b.ent).filter(p => !b.ent[p].out);
+        alive.sort((x, y) => b.ent[x].losses - b.ent[y].losses);
+        const nm = { id: S.m.length, k, pool: "F", a: alive[0], b: alive[1], st: "q", table: null, w: null, t0: ev.t };
+        S.m.push(nm); S.finalOrder.push(nm.id); b.hasF = true;
+      }
+    });
+  }
+  assign(S);
+}
+
+function pair(S, b, rng, t){
+  if (b.champ || b.ready) return;
+  const ids = Object.keys(b.ent); if (!ids.length) return;
+  const alive = ids.filter(p => !b.ent[p].out);
+  const W = alive.filter(p => b.ent[p].losses === 0);
+  const L = alive.filter(p => b.ent[p].losses === 1);
+  const act = S.m.filter(m => m.k === b.k && (m.st === "q" || m.st === "p"));
+  const aW = act.filter(m => m.pool === "W").length;
+  const aL = act.filter(m => m.pool === "L").length;
+  if (!aW && !aL){
+    if (alive.length === 1){
+      b.champ = alive[0];
+      b.second = b.elim[b.elim.length - 1] || null;
+      b.third = b.elim[b.elim.length - 2] || null;
+      return;
+    }
+    if (alive.length === 2 && W.length <= 1){
+      b.ready = true; b.third = b.elim[b.elim.length - 1] || null; return;
+    }
+    if (!alive.length) return;
+  }
+  const wBusy = aW > 0;
+  if (!aW && W.length >= 2) makeRound(S, b, W, "W", rng, t);
+  if (!aL && !wBusy && L.length >= 2) makeRound(S, b, L, "L", rng, t);
+}
+
+function makeRound(S, b, ids, pool, rng, t){
+  const R = b.rounds[pool];
+  let arr;
+  if (pool === "W" && R.length){
+    // 前の回戦の並び順のまま勝ち上がった人を並べる（トーナメント表の形になるように）
+    arr = [];
+    R[R.length - 1].forEach(it => { const p = it.bye || S.m[it.mid].w; if (ids.includes(p) && !arr.includes(p)) arr.push(p); });
+    ids.forEach(p => { if (!arr.includes(p)) arr.push(p); });
+  } else if (pool === "W"){
+    arr = shuffle(ids, rng);
+  } else {
+    arr = null;
+  }
+  let pool2 = arr ? arr.slice() : ids.slice();
+  let byeP = null, byePos = 0;
+  if (pool2.length % 2){
+    // 直前に不戦勝だった人は、ほかに候補がいれば外す
+    const last = b.byes.length ? b.byes[b.byes.length - 1].p : null;
+    const base = pool2.length > 1 ? pool2.filter(p => p !== last) : pool2;
+    const mn = Math.min(...base.map(p => b.ent[p].byes));
+    const c = base.filter(p => b.ent[p].byes === mn);
+    byeP = c[Math.floor(rng() * c.length)];
+    b.ent[byeP].byes++; b.byes.push({ p: byeP, pool, t });
+    byePos = pool2.indexOf(byeP);
+    pool2 = pool2.filter(p => p !== byeP);
+  }
+  // 組み合わせの「よくなさ」：同じ道場どうし（3点）・前に当たった人どうし（2点）。これが一番小さい組み方を選ぶ
+  const dj = p => dojoKey(S.players[p] && S.players[p].dojo);
+  const pc = (x, y) => (dj(x) && dj(x) === dj(y) ? 3 : 0) + (b.played[pk(x, y)] ? 2 : 0);
+  const cost = a => { let c = 0; for (let j = 0; j + 1 < a.length; j += 2) c += pc(a[j], a[j + 1]); return c; };
+  // 入れ替えで少しずつよくする（並びはなるべく崩さない）
+  const improve = a => {
+    a = a.slice();
+    for (let it = 0; it < 60; it++){
+      let bestGain = 0, bi = -1, bj = -1;
+      for (let i = 0; i + 1 < a.length; i += 2){
+        const ci = pc(a[i], a[i + 1]); if (!ci) continue;
+        for (let j = 0; j < a.length; j++){
+          if (j === i || j === i + 1) continue;
+          const pj = j % 2 ? j - 1 : j + 1; // j の相手
+          const before = ci + pc(a[j], a[pj]);
+          const after = pc(a[i], a[j]) + pc(a[i + 1], a[pj]);
+          const gain = before - after;
+          if (gain > bestGain){ bestGain = gain; bi = i + 1; bj = j; }
+        }
+      }
+      if (bi < 0) break;
+      [a[bi], a[bj]] = [a[bj], a[bi]];
+    }
+    return a;
+  };
+  let best = pool2;
+  if (!(pool === "W" && R.length)){
+    // 1回戦と敗者復活戦：たくさんの並べ方を試して、いちばんよいものを選ぶ
+    let bs = 1e9;
+    for (let i = 0; i < 300; i++){
+      const sh = improve(i === 0 && arr ? pool2 : shuffle(pool2, rng)); const c = cost(sh);
+      if (c < bs){ bs = c; best = sh; }
+      if (!c) break;
+    }
+  } else {
+    // 2回戦以降の本戦：トーナメント表の並びのまま、必要なところだけ入れ替える
+    best = improve(pool2);
+  }
+  const round = [];
+  for (let j = 0; j < best.length; j += 2){
+    const m = { id: S.m.length, k: b.k, pool, a: best[j], b: best[j + 1], st: "q", table: null, w: null, t0: t, rd: R.length };
+    S.m.push(m); round.push({ mid: m.id });
+  }
+  if (byeP) round.splice(Math.min(round.length, arr ? Math.floor(byePos / 2) : round.length), 0, { bye: byeP });
+  R.push(round);
+}
+
+function prelimDone(b){ return b.ready || !!b.champ || !Object.keys(b.ent).length; }
+function used(S, k){ return Object.keys(S.br[k].ent).length > 0; }
+function otherArm(k){ const i = k.lastIndexOf("_"); return k.slice(0, i) + "_" + (k.slice(i + 1) === "R" ? "L" : "R"); }
+// このトーナメントを始めてよいか：右は同じクラスの左が終わってから。同じクラスの右と左は同時にやらない
+function canStart(S, k){
+  if (k.endsWith("_R") && used(S, otherArm(k)) && !prelimDone(S.br[otherArm(k)])) return false;
+  if (S.tableKey.includes(otherArm(k))) return false;
+  return true;
+}
+// 運営が選んでよいクラスか（右は同じクラスの左が終わってから、同じクラスの右と左は同時にやらない）
+function claimOK(S, k, i){
+  if (k.endsWith("_R") && used(S, otherArm(k)) && !prelimDone(S.br[otherArm(k)])) return false;
+  const o = otherArm(k);
+  for (let j = 0; j < TABLES; j++){ if (S.claim[j] === o || S.tableKey[j] === o) return false; }
+  return true;
+}
+function claimBlock(S, k){
+  if (!used(S, k)) return "出場者なし";
+  if (prelimDone(S.br[k])) return "終わり";
+  if (k.endsWith("_R") && used(S, otherArm(k)) && !prelimDone(S.br[otherArm(k)])) return "同じクラスの左が終わってから";
+  const o = otherArm(k);
+  for (let j = 0; j < TABLES; j++){ if (S.claim[j] === o || S.tableKey[j] === o) return "同じクラスの" + (o.endsWith("_L") ? "左" : "右") + "が試合中"; }
+  return "";
+}
+function waitingKeys(S){ return S.order.filter(k => used(S, k) && !prelimDone(S.br[k]) && !S.tableKey.includes(k)); }
+
+function waitKey(S, m){ const le = p => { const k = S.players[p] ? S.players[p].full : p; return S.lastEnd[k] == null ? -1 : S.lastEnd[k]; }; return Math.max(le(m.a), le(m.b)); }
+function queueList(S){
+  return S.m.filter(m => m.st === "q" && (m.pool === "W" || m.pool === "L"))
+    .sort((x, y) => waitKey(S, x) - waitKey(S, y) || x.id - y.id);
+}
+function assign(S){
+  // 同じ名前の人（ダブルエントリーで2回登録した人）は同じ人として、2つの台で同時に呼ばない
+  const who = p => (S.players[p] ? S.players[p].full : p);
+  const busy = { s: new Set(), has(p){ return this.s.has(who(p)); }, add(p){ this.s.add(who(p)); } };
+  S.m.forEach(m => { if (m.st === "p"){ busy.add(m.a); busy.add(m.b); } });
+  // 長く待っている台から先に試合を入れる（同じ人を取り合ったとき、待っていた台を優先）
+  const order = Array.from({ length: TABLES }, (_, i) => i).sort((x, y) => (S.idle[x] || 0) - (S.idle[y] || 0) || x - y);
+  for (const i of order){
+    if (S.tables[i] != null) continue;
+    let k;
+    if (S.claim[i] && prelimDone(S.br[S.claim[i]])) S.claim[i] = null;
+    if (S.claim[i]){ k = S.claim[i]; S.tableKey[i] = k; }
+    else {
+      k = S.tableKey[i];
+      if (!k || prelimDone(S.br[k]) || S.claim.includes(k)){
+        S.tableKey[i] = null;
+        k = S.autoAssign ? (waitingKeys(S).find(x => canStart(S, x) && !S.claim.includes(x)) || null) : null;
+        S.tableKey[i] = k;
+      }
+    }
+    if (!k) continue;
+    const m = S.m.filter(m => m.k === k && m.st === "q" && (m.pool === "W" || m.pool === "L"))
+      .sort((x, y) => waitKey(S, x) - waitKey(S, y) || x.id - y.id)
+      .find(m => !busy.has(m.a) && !busy.has(m.b));
+    if (m){ m.st = "p"; m.table = i; S.tables[i] = m.id; busy.add(m.a); busy.add(m.b); }
+  }
+}
+function tableQueue(S, i){
+  const k = S.tableKey[i]; if (!k) return [];
+  return S.m.filter(m => m.k === k && m.st === "q" && (m.pool === "W" || m.pool === "L"))
+    .sort((x, y) => waitKey(S, x) - waitKey(S, y) || x.id - y.id);
+}
+// 順位：まだ残っている人より下、同じ回戦で負けた人どうしは同率
+function rankOf(S, b, p){
+  if (b.champ === p) return { r: 1, tie: false };
+  if (b.second === p) return { r: 2, tie: false };
+  const e = b.ent[p]; if (!e || !e.out) return null;
+  const ids = Object.keys(b.ent);
+  const alive = ids.filter(x => !b.ent[x].out).length;
+  const others = ids.filter(x => b.ent[x].out && x !== b.second);
+  const rd = x => (b.elimRd[x] == null ? -1 : b.elimRd[x]);
+  const r = 1 + alive + (b.second ? 1 : 0) + others.filter(x => rd(x) > rd(p)).length;
+  const tie = others.filter(x => x !== p && rd(x) === rd(p)).length > 0;
+  return { r, tie };
+}
+function record(S, k, p){
+  let w = 0, l = 0;
+  S.m.forEach(m => { if (m.k === k && m.st === "d" && (m.a === p || m.b === p)){ if (m.w === p) w++; else l++; } });
+  return { w, l };
+}
+
+// ===== 画面部分 =====
+const APP_VER = "11月13日 01:20";   // 作った日時（build.sh が書きこむ）
+const ui = { tab: "match", br: KEYS[0], eR: null, eL: null, role: null, desk: null, f: {} };
+let evs = [], serverEvs = [], outbox = [], sentIds = new Set();
+let S = freshState(), mode = "loading", db = null, canWrite = true, note = "", lastT = 0, flushing = false;
+let dataReady = false;
+let modalText = "", modalBtns = null, toastTimer = null, online = (typeof navigator !== "undefined" ? navigator.onLine !== false : true);
+
+// 役割（運営／選手・観客）と担当の台は、この端末に覚えておく
+try { const r = JSON.parse(localStorage.getItem("aw_role") || "null"); if (r){ ui.role = r.role; ui.desk = r.desk; ui.deskKey = r.deskKey || null; } } catch (e) {}
+try { ui.my = JSON.parse(localStorage.getItem("aw_my") || "[]") || []; } catch (e) { ui.my = []; }
+function saveMy(){ try { localStorage.setItem("aw_my", JSON.stringify(ui.my)); } catch (e) {} }
+function saveRole(){ try { localStorage.setItem(ui.practice ? "aw_role_p" : "aw_role", JSON.stringify({ role: ui.role, desk: ui.desk, deskKey: ui.deskKey })); } catch (e) {} }
+
+const isStaff = () => ui.role === "staff" && canWrite;
+const isAdmin = () => isStaff() && ui.desk === "hq";
+const isDesk = () => isStaff() && typeof ui.desk === "number";
+// この試合の結果を、この端末から入力してよいか
+function canInput(m){
+  if (!isStaff() || m.st === "d") return false;
+  if (ui.desk === "hq") return true;
+  return isDesk() && m.st === "p" && m.table === ui.desk && m.k === ui.deskKey;
+}
+
+function recompute(){
+  evs.sort((a, b) => (a.t - b.t) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  S = replay(evs);
+  if (evs.length) lastT = Math.max(lastT, evs[evs.length - 1].t);
+}
+
+// ---------- 保存（ネットが切れても端末に一時保存して、つながったら自動で送る） ----------
+const newEvId = () => "e" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function saveOutbox(){ try { localStorage.setItem("aw_outbox", JSON.stringify(outbox)); } catch (e) {} }
+function loadOutbox(){ try { outbox = JSON.parse(localStorage.getItem("aw_outbox") || "[]") || []; } catch (e){ outbox = []; } }
+function mergeEvs(){
+  if (ui.practice) return;   // 練習モードの間は、本番の記録で画面を書きかえない
+  const ids = new Set(serverEvs.map(e => e.id));
+  const n = outbox.length;
+  outbox = outbox.filter(e => !ids.has(e.id));
+  if (outbox.length !== n) saveOutbox();
+  evs = serverEvs.concat(outbox);
+  recompute();
+}
+function withTimeout(p, ms){ return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: "timeout" }), ms))]); }
+async function flush(){
+  if (mode === "gas") return flushGas();
+  if (flushing || mode !== "db" || !outbox.length) return;
+  flushing = true;
+  for (const ev of outbox.slice()){
+    if (sentIds.has(ev.id)) continue;
+    const body = Object.assign({}, ev); delete body.id;
+    try { await withTimeout(db.collection("events").doc(ev.id).set(body), 8000); sentIds.add(ev.id); }
+    catch (e){
+      if (e && e.code === "invalid_argument"){ canWrite = false; outbox = []; saveOutbox(); toast("この端末からは入力できません（見るだけ）"); }
+      else if (e && e.code === "quota_exceeded"){ toast("保存できる量の上限に達しました"); }
+      else setTimeout(flush, 5000);
+      break;
+    }
+  }
+  flushing = false;
+  render();
+}
+function push(ev){
+  if (!canWrite) return;
+  ui.lastPush = Date.now();
+  ev.t = Math.max(Date.now(), lastT + 1); lastT = ev.t;
+  ev.id = newEvId();
+  if (mode === "db" || mode === "gas"){ outbox.push(ev); saveOutbox(); mergeEvs(); render(); flush(); }
+  else { evs.push(ev); saveLocal(); recompute(); render(); }
+}
+// ---------- Google（スプレッドシート）とのやりとり ----------
+// GitHubの入口から開いたとき（window.AW_API がある）は、裏口（fetch）でGoogleの係とやりとりする
+function gasCall(fn, ...args){
+  if (window.AW_API){
+    const u = window.AW_API;
+    if (fn === "putEvents") return fetch(u, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn, list: args[0], pass: args[1] }) }).then(r => r.json());
+    if (fn === "getEvents") return fetch(u + "?fn=getEvents&from=" + (+args[0] || 0)).then(r => r.json());
+    if (fn === "checkPass") return fetch(u + "?fn=checkPass&pass=" + encodeURIComponent(args[0] || "")).then(r => r.json());
+    return Promise.reject(new Error("unknown"));
+  }
+  return new Promise((res, rej) => google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args));
+}
+let polling = false;
+async function flushGas(){
+  if (flushing || !outbox.length) return;
+  const batch = outbox.filter(e => !sentIds.has(e.id)); if (!batch.length) return;
+  flushing = true;
+  try {
+    const r = await withTimeout(gasCall("putEvents", batch, ui.pass || ""), 30000);
+    (r.ok || []).forEach(id => sentIds.add(id));
+    if (r.bad && r.bad.length){
+      const bad = new Set(r.bad); outbox = outbox.filter(e => !bad.has(e.id)); saveOutbox(); mergeEvs();
+      if (ui.role === "staff"){ ui.pass = ""; try { localStorage.removeItem("aw_pass"); } catch (e) {} }
+      toast("保存できませんでした。パスコードを確かめてください");
+    }
+    flushing = false;
+    await poll();
+  } catch (e){ flushing = false; setTimeout(flush, 5000); }
+  render();
+}
+async function poll(){
+  if (mode !== "gas" || polling) return;
+  polling = true;
+  try {
+    const r = await withTimeout(gasCall("getEvents", serverEvs.length), 20000);
+    const before = serverEvs.length;
+    serverEvs = (r.from === 0 ? [] : serverEvs).concat(r.evs || []);
+    online = true; ui.lastSync = Date.now();
+    if (!dataReady){ dataReady = true; ui.deskSeenTable = undefined; mergeEvs(); if (isAdmin() && !S.started) ui.tab = "entry"; render(); }
+    else if (serverEvs.length !== before || r.from === 0){ mergeEvs(); render(); }
+  } catch (e) {}
+  polling = false;
+}
+// 受付番号（Googleの係が番号を決めるまでは「確認中」）
+function noOf(pl){ return mode === "gas" && pl.pend ? '<span class="pend">確認中…</span>' : pl.no; }
+const LKEY = () => ui.practice ? "aw_practice_events" : "aw_events";
+function saveLocal(){ try { localStorage.setItem(LKEY(), JSON.stringify(evs)); } catch (e) {} }
+function loadLocal(){ try { evs = JSON.parse(localStorage.getItem(LKEY()) || "[]") || []; } catch (e){ evs = []; } }
+
+// ---------- 練習モード：このスマホの中だけで動く、別の大会（本番の記録には何も送らない） ----------
+let realMode = null, realRole = null;
+function startPractice(){
+  if (ui.practice) return;
+  realMode = mode; realRole = { role: ui.role, desk: ui.desk, deskKey: ui.deskKey };
+  ui.practice = true; try { localStorage.setItem("aw_practice_on", "1"); } catch (e) {}
+  mode = "local";
+  let pr = null; try { pr = JSON.parse(localStorage.getItem("aw_role_p") || "null"); } catch (e) {}
+  ui.role = pr ? pr.role : null; ui.desk = pr ? pr.desk : null; ui.deskKey = pr ? pr.deskKey : null;
+  loadLocal(); recompute(); dataReady = true; ui.lastHtml = ""; window.scrollTo(0, 0); render();
+}
+function stopPractice(){
+  if (!ui.practice) return;
+  ui.practice = false; try { localStorage.removeItem("aw_practice_on"); } catch (e) {}
+  mode = realMode || "local";
+  const r = realRole || {}; ui.role = r.role || null; ui.desk = r.desk == null ? null : r.desk; ui.deskKey = r.deskKey || null;
+  if (mode === "local") loadLocal(); else mergeEvs();
+  ui.lastHtml = ""; window.scrollTo(0, 0); render();
+  if (mode === "gas") poll();
+}
+
+function toast(t){ note = t; render(); clearTimeout(toastTimer); toastTimer = setTimeout(() => { note = ""; render(); }, 3500); }
+// 確認画面。buttons: [{label, cls, fn}]
+function choose(text, buttons, noCancel){ modalText = text; modalBtns = noCancel ? buttons : buttons.concat([{ label: "やめる", cls: "ghost", fn: null }]); render(); }
+function ask(text, ok, fn){ choose(text, [{ label: ok, cls: "main", fn }]); }
+
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+// 名前の表示：同じクラスに同じ名字の人がいるときだけフルネーム。ふりがながあれば名前の上に小さく出す
+let nameCache = { S: null, map: {} };
+function dispMap(k){
+  if (nameCache.S !== S) nameCache = { S, map: {} };
+  if (nameCache.map[k]) return nameCache.map[k];
+  const ids = Object.keys(S.br[k].ent), out = {};
+  const sc = {}; ids.forEach(p => { const v = S.players[p].short; sc[v] = (sc[v] || 0) + 1; });
+  ids.forEach(p => { out[p] = { full: sc[S.players[p].short] > 1, suf: "" }; });
+  const lab = p => (out[p].full ? S.players[p].full : S.players[p].short);
+  const fc = {}, seen = {}; ids.forEach(p => { fc[lab(p)] = (fc[lab(p)] || 0) + 1; });
+  ids.forEach(p => { const l = lab(p); if (fc[l] > 1){ seen[l] = (seen[l] || 0) + 1; if (seen[l] > 1) out[p].suf = "(" + seen[l] + ")"; } });
+  return nameCache.map[k] = out;
+}
+const isLatin = v => /^[\x00-\x7F]+$/.test(v || "");
+function rb(txt, kana){ return kana ? `<ruby>${esc(txt)}<rt>${esc(kana)}</rt></ruby>` : esc(txt); }
+// pl：選手、full：フルネームにするか
+function rubyName(pl, full){
+  if (!pl.last) return esc(pl.full);
+  if (!full || !pl.first) return rb(pl.last, pl.kLast);
+  return isLatin(pl.last) && isLatin(pl.first) ? rb(pl.first, pl.kFirst) + " " + rb(pl.last, pl.kLast) : rb(pl.last, pl.kLast) + " " + rb(pl.first, pl.kFirst);
+}
+const nm = (p, k) => { const pl = S.players[p]; if (!pl) return "?";
+  if (k && S.br[k] && S.br[k].ent[p]){ const d = dispMap(k)[p]; return rubyName(pl, d.full) + esc(d.suf); }
+  return rubyName(pl, true); };
+function evLabel(ev){
+  if (!ev) return "";
+  switch (ev.type){
+    case "add": return "「" + esc(((ev.last || "") + " " + (ev.first || "")).trim() || ev.name) + "」の登録";
+    case "addMany": return "テスト選手の登録";
+    case "simulate": return "全部ランダムで終わらせたこと";
+    case "remove": return "選手の削除";
+    case "start": return "試合開始";
+    case "finals": return "決勝開始";
+    case "result": { const m = S.m[ev.mid]; return m ? "「" + nm(m.a, m.k) + " vs " + nm(m.b, m.k) + "」の結果" : "試合結果"; }
+    case "fix": return "結果の修正";
+    case "withdraw": return "「" + nm(ev.pid) + "」の棄権";
+    case "order": return "クラスの順番の変更";
+    case "reset": return "全部リセット";
+  }
+  return "";
+}
+
+// ---------- 表示 ----------
+function roleLabel(){
+  if (ui.role === "viewer") return "選手・観客";
+  if (ui.role === "entrant") return "出場登録";
+  if (ui.role === "staff") return ui.desk === "hq" ? (S.started ? "運営：本部" : "運営：受付") : typeof ui.desk === "number" ? "運営：" + TNAME[ui.desk] + "担当" : "運営";
+  return "";
+}
+function header(){
+  const st = (mode === "db" || mode === "gas") ? (online ? '<span class="live"><i></i>リアルタイム更新中</span>' : '<span class="live off">オフライン</span>')
+    : mode === "local" ? (ui.practice ? '<span class="live off">練習モード</span>' : '<span class="live off">お試しモード（この端末だけ）</span>') : '<span class="live off">読み込み中…</span>';
+  return `<header><div class="ttl"><small>第3回 関谷塾杯${ui.role ? "　" + roleLabel() : ""}</small>トーナメント表</div>${st}</header>`;
+}
+function practiceBan(){ return ui.practice ? `<div class="ban practiceban"><b>練習モード</b>（このスマホの中だけ。ほかの人には見えません）<button class="x2" data-a="practice" data-v="off">練習をやめる</button></div>` : ""; }
+function banners(){
+  let h = "";
+  if ((mode === "db" || mode === "gas") && !online) h += `<div class="ban warn">ネットに接続されていません。入力した結果はこの端末に保存して、つながったら自動で送ります。</div>`;
+  const unsent = outbox.filter(e => !sentIds.has(e.id)).length;
+  if ((mode === "db" || mode === "gas") && unsent) h += `<div class="ban warn">未送信の結果が${unsent}件あります（自動で送ります）</div>`;
+  if (ui.role === "staff" && !canWrite) h += `<div class="ban">この端末では入力できません（見るだけ）</div>`;
+  h += practiceBan();
+  h += soloBanner();
+  return h;
+}
+// ---------- 1人だけのクラス ----------
+function soloPid(k){ return Object.keys(S.br[k].ent)[0]; }
+function soloBanner(){
+  const ks = soloKeys(S); if (!ks.length) return "";
+  if (isAdmin()) return soloPanel(ks);
+  const list = ks.map(k => `${esc(keyLabel(k))}（${rubyName(S.players[soloPid(k)], true)} さん）`).join("<br>");
+  return `<div class="solo"><div class="soloh">⚠ 出場者が1人だけのクラスがあります</div>${list}
+    <div class="sm" style="margin-top:6px">本部が本人と相談しています。名前のある方は、本部（受付）に来てください。<br>Only one entrant in this class. Please come to the reception.</div></div>`;
+}
+function soloPanel(ks){
+  let h = `<div class="solo"><div class="soloh">⚠ 出場者が1人だけのクラスがあります（${ks.length}件）</div>
+    <div class="sm">本人に「上のクラスに出てもらえますか？」と相談して、結果を下から選んでください。</div>`;
+  ks.forEach(k => { const pid = soloPid(k), pl = S.players[pid];
+    const ups = upKeys(k);
+    const before = feeOf(pl), rest = pl.keys.filter(x => x !== k), after = rest.length ? FEE_ONE : 0, refund = before - after;
+    h += `<div class="solorow"><div><b>${esc(keyLabel(k))}</b>：<b class="big2">${rubyName(pl, true)} さん</b>（受付番号 ${noOf(pl)}）${pl.dojo ? `<span class="dj">${esc(pl.dojo)}</span>` : ""}</div>
+      ${ups.length ? `<div class="sm">相談：「${ups.map(keyLabel).join("」か「")}」に出てもらえますか？</div>` : `<div class="sm red">S +75 より上のクラスはありません。どうするかは運営で相談してください。</div>`}
+      <div class="solobtns">${ups.map(u => begun(S, u) ? `<button class="btn ghost" disabled>${esc(keyLabel(u))}に移す（もう試合が始まっています）</button>`
+          : `<button class="btn main" data-a="solomove" data-pid="${pid}" data-k="${k}" data-v="${u}">${esc(keyLabel(u))}に移す</button>`).join("")}
+        <button class="btn ghost" data-a="solodrop" data-pid="${pid}" data-k="${k}">出ない（${refund.toLocaleString()}円を返金）</button>
+        <button class="btn ghost" data-a="soloack" data-k="${k}">このままにする（試合なしで1位）</button></div></div>`;
+  });
+  return h + `</div>`;
+}
+function tabs(){
+  let t;
+  if (ui.role === "entrant") t = [["self", "出場登録<small>Entry</small>"], ["class", "トーナメント表"]];
+  else if (isDesk()) t = [["desk", TNAME[ui.desk]], ["class", "トーナメント表"]];
+  else if (isAdmin()) t = [["entry","出場登録<small>Entry</small>"],["match","試合入力"],["class","トーナメント表"]];
+  else t = [["entry","出場者"],["match","試合"],["class","トーナメント表"]];
+  if (!t.some(x => x[0] === ui.tab)) ui.tab = t[0][0];
+  return `<nav>${t.map(x => `<button data-a="tab" data-v="${x[0]}" class="${ui.tab === x[0] ? "on" : ""}">${x[1]}</button>`).join("")}</nav>`;
+}
+function rk(k, p){ const r = record(S, k, p); return `<em class="rk">${r.w + r.l}戦${r.w}勝${r.l}敗</em>`; }
+function rec(k, p){ const r = record(S, k, p); return `<span class="rec">${r.w + r.l}戦${r.w}勝${r.l}敗</span>`; }
+function poolBadge(p){ return `<span class="pb pb-${p}">${POOL[p]}</span>`; }
+
+function matchCard(m, title){
+  const can = canInput(m);
+  const side = p => can
+    ? `<button class="pl tap" data-a="pick" data-mid="${m.id}" data-w="${p}">${nm(p, m.k)}${rec(m.k, p)}<small>勝ちならタップ</small></button>`
+    : `<div class="pl">${nm(p, m.k)}${rec(m.k, p)}</div>`;
+  return `<div class="mc"><div class="mh"><b>${title}</b><span>${esc(keyLabel(m.k))}</span>${poolBadge(m.pool)}</div>
+    <div class="vs">${side(m.a)}<span class="v">VS</span>${side(m.b)}</div></div>`;
+}
+
+// ---------- 最初の画面：役割を選ぶ ----------
+function viewRole(){
+  // 受付中は「出場登録」と「運営」、試合開始のあとは「選手・観客」と「運営」
+  const first = S.started
+    ? `<button class="rolebtn" data-a="role" data-v="viewer"><b>選手・観客</b><span>Player / Spectator</span><small>トーナメントと試合の進み具合を見る</small></button>`
+    : `<button class="rolebtn entry" data-a="role" data-v="entrant"><b>出場登録（選手）</b><span>Entry for players</span><small>大会に出る人は、ここから自分で登録します</small></button>`;
+  return `<div class="hero"><p class="big">あなたはどちらですか？</p><p class="sub">Who are you?</p>
+    ${first}
+    <p class="ver" style="position:static;margin-top:6px">画面の版：${APP_VER}</p>
+    <button class="rolebtn staff" data-a="role" data-v="staff"><b>運営</b><span>Staff</span><small>試合結果の入力や、選手の登録をする</small></button>
+    ${!ui.practice && mode !== "local" ? `<button class="rolebtn practice" data-a="practice" data-v="on"><b>練習モード</b><span>Practice</span><small>このスマホの中だけで、運営も選手も自由に試せます。本番の記録やほかの人には、何も影響しません</small></button>` : ""}</div>`;
+}
+// 運営のパスコード（Googleの中で動いているときだけ）
+function viewPass(){
+  return `<div class="hero"><p class="big">運営のパスコードを入れてください</p>
+    <p class="sub">運営の人だけが入力できるようにするためのものです。わからないときは本部に聞いてください。</p>
+    <input id="f_pass" class="fi bigsearch" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="パスコード">
+    <button class="btn main" data-a="passok">決定</button>
+    <button class="btn ghost" data-a="role" data-v="">戻る</button></div>`;
+}
+function viewDeskPick(){
+  // 試合が始まる前は受付だけ。始まったら「台の担当」と「本部」に分かれる
+  if (!S.started) return `<div class="hero"><p class="big">担当を選んでください</p>
+    <button class="rolebtn pick" data-a="desk" data-v="hq"><b>受付（選手登録）</b><small>選手の登録、検量、入金の受付をします。受付が終わったら、ここから試合を始めます</small></button>
+    <button class="btn ghost" data-a="role" data-v="">戻る</button></div>`;
+  return `<div class="hero"><p class="big">担当を選んでください</p>
+    <button class="rolebtn pick" data-a="pickmode" data-v="table"><b>台の担当</b><small>クラスと台を選んで、その台の試合結果だけを入力します</small></button>
+    <button class="rolebtn pick" data-a="desk" data-v="hq"><b>本部</b><small>決勝、結果の修正、棄権、遅れて来た人の受付など、すべてできます</small></button>
+    <button class="btn ghost" data-a="role" data-v="">戻る</button></div>`;
+}
+// 担当するクラスを選ぶ
+function viewClassPick(){
+  const list = S.order.filter(k => used(S, k));
+  const rec = list.find(k => !claimBlock(S, k) && !S.claim.includes(k) && !S.tableKey.includes(k));
+  const fixed = ui.fixedTable;
+  let h = `<div class="hero" style="text-align:left"><p class="big" style="text-align:center">あなたが担当するクラスを<br>選んでください</p>
+    ${fixed != null ? `<p class="sub center">${TNAME[fixed]}で次にやるクラスを選びます</p>` : ""}`;
+  if (!list.length) h += `<div class="card center sub">まだ出場者が登録されていません</div>`;
+  h += list.map(k => {
+    const blk = claimBlock(S, k), where = S.claim.indexOf(k) >= 0 ? S.claim.indexOf(k) : S.tableKey.indexOf(k);
+    const running = where >= 0;
+    // 選べるのは「次はこれ」のクラスと、試合中のクラス（引き継ぎ用）だけ
+    const dis = !(k === rec || running) || (fixed != null && running && where !== fixed);
+    const n = Object.keys(S.br[k].ent).length;
+    const endTxt = n <= 1 ? (soloKeys(S).includes(k) ? "1人だけ（本部が相談中）" : "1人だけなので試合なし") : n === 2 && !S.m.some(m => m.k === k && m.st === "d" && m.pool !== "F" && m.pool !== "F2") ? "2人だけなので決勝だけ" : "終わり（あとは決勝）";
+    const st = blk === "終わり" ? `<span class="os done">${endTxt}</span>` : running ? `<span class="os now">${TNAME[where]}で試合中</span>` : blk ? `<span class="os done">${blk}</span>` : k === rec ? `<span class="os rec">次はこれ</span>` : `<span class="os done">順番待ち</span>`;
+    return `<button class="cpick ${k === rec ? "rec" : ""}" data-a="pickcls" data-v="${k}" ${dis ? "disabled" : ""}><b>${esc(keyLabel(k))}</b><span class="sm">${Object.keys(S.br[k].ent).length}人</span>${st}</button>`;
+  }).join("");
+  h += `<p class="sub center" style="margin-top:12px">選べるのは「次はこれ」のクラスだけです（試合中のクラスは引き継ぎのときに選べます）。</p>`;
+  return h + `<button class="btn ghost" data-a="pickmode" data-v="back">戻る</button></div>`;
+}
+// 担当する台を選ぶ
+function viewTablePick(){
+  const k = ui.pendKey;
+  let h = `<div class="hero" style="text-align:left"><p class="big" style="text-align:center">あなたが担当する台を<br>選んでください</p><p class="sub center">クラス：<b>${esc(keyLabel(k))}</b></p>`;
+  for (let i = 0; i < TABLES; i++){
+    const cur = S.claim[i] || S.tableKey[i];
+    const mine = cur === k;
+    const busy = !mine && cur && !prelimDone(S.br[cur]);
+    const playing = S.tables[i] != null && S.m[S.tables[i]].k !== k;
+    const dis = busy || playing;
+    const st = mine ? `<span class="os now">このクラスを試合中（引き継ぐ）</span>` : dis ? `<span class="os done">${esc(keyLabel(S.m[S.tables[i]] ? S.m[S.tables[i]].k : cur))}の試合中</span>` : `<span class="os wait">空いています</span>`;
+    h += `<button class="cpick" data-a="picktbl" data-v="${i}" ${dis ? "disabled" : ""}><b>${TNAME[i]}</b>${st}</button>`;
+  }
+  return h + `<button class="btn ghost" data-a="pickmode" data-v="table">クラスを選び直す</button></div>`;
+}
+
+// ---------- 台担当の画面：自分の台だけ ----------
+function viewDesk(){
+  const i = ui.desk, k = ui.deskKey;
+  const flash = ui.flashUntil && Date.now() < ui.flashUntil;
+  let h = `<div class="dh"><b>${TNAME[i]}</b>${k ? `<span class="tk">${esc(keyLabel(k))}</span>` : ""}</div>`;
+  if (flash) h += `<div class="flash">待っていた選手の試合が終わったので、<br>この台の試合を始められます</div>`;
+  if (k && used(S, k) && prelimDone(S.br[k])){
+    h += `<div class="card center"><p class="big">${esc(keyLabel(k))}の予選が終わりました</p><p class="sub">次に${TNAME[i]}でやるクラスを選んでください。</p>
+      <button class="btn main" data-a="nextcls">次のクラスを選ぶ</button></div>`;
+  } else if (!k || (S.claim[i] !== k && S.tableKey[i] !== k)){
+    const now = S.claim[i] || S.tableKey[i];
+    h += `<div class="card center"><p class="big">担当のクラスが変わっています</p><p class="sub">${now ? `いま${TNAME[i]}は「${esc(keyLabel(now))}」になっています。` : `${TNAME[i]}には、まだクラスが入っていません。`}</p>
+      <button class="btn main" data-a="pickmode" data-v="table">クラスと台を選び直す</button></div>`;
+    return h;
+  } else if (!S.started){
+    return h + `<div class="card center"><p class="big">まだ試合は始まっていません</p><p class="sub">本部が試合開始を押すと、ここに試合が出ます。</p></div>`;
+  } else {
+    const mid = S.tables[i];
+    if (mid != null && S.m[mid].k === k) h += `<div class="${flash ? "flashcard" : ""}">${matchCard(S.m[mid], "いまの試合")}</div>`;
+    else if (mid != null) h += `<div class="card center"><p class="big">前のクラスの試合が残っています</p><p class="sub">${esc(keyLabel(S.m[mid].k))}の試合が終わると、${esc(keyLabel(k))}が始まります。</p></div>`;
+    else h += `<div class="card center"><p class="big">次の試合を待っています</p>${waitReason(i, k)}</div>`;
+    const q = tableQueue(S, i).filter(m => m.k === k);
+    if (q.length) h += `<div class="card"><div class="lbl">この台の次の試合</div>${q.slice(0, 3).map((m, j) => `<div class="row"><span class="n">${j + 1}</span><span class="grow">${nm(m.a, m.k)} vs ${nm(m.b, m.k)}</span><span class="sm">${POOL[m.pool]}</span></div>`).join("")}</div>`;
+  }
+  const done = S.m.filter(m => m.st === "d" && m.table === i && (m.pool === "W" || m.pool === "L")).sort((x, y) => (y.te || 0) - (x.te || 0)).slice(0, 6);
+  if (done.length) h += `<div class="card"><div class="lbl">この台の最近の結果（まちがえたら「修正する」）</div>${done.map(m => resultRow(m, true)).join("")}</div>`;
+  return h;
+}
+// 台が空いているのに試合が入らない理由
+function waitReason(i, k){
+  const q = tableQueue(S, i).filter(m => m.k === k);
+  const who = p => S.players[p] ? S.players[p].full : p;
+  const busyAt = p => { const m = S.m.find(x => x.st === "p" && [x.a, x.b].some(y => who(y) === who(p))); return m ? m : null; };
+  if (q.length){
+    const m = q[0]; const bm = busyAt(m.a) || busyAt(m.b);
+    if (bm){ const p = [m.a, m.b].find(y => busyAt(y)); return `<p class="sub">次の試合「${nm(m.a, m.k)} vs ${nm(m.b, m.k)}」の<b>${esc(who(p))}</b>さんが、いま${TNAME[bm.table]}で${esc(keyLabel(bm.k))}の試合中です。<br>その試合が終わると、自動でこの台に入ります。</p>`; }
+    return "";
+  }
+  return `<p class="sub">このクラスのほかの試合が終わると、次の組み合わせが自動で決まります。</p>`;
+}
+function resultRow(m, withFix){
+  const l = m.w === m.a ? m.b : m.a;
+  return `<div class="row"><span class="grow"><b>○ ${nm(m.w, m.k)}</b> <span class="sm">vs</span> <span class="lose">${nm(l, m.k)}</span>${m.wd ? " <em>棄権</em>" : ""}<br><span class="sm">${esc(keyLabel(m.k))}・${POOL[m.pool]}</span></span>
+    ${withFix && !m.wd && m.evId && isStaff() ? `<button class="x" data-a="fix" data-mid="${m.id}">修正する</button>` : ""}</div>`;
+}
+
+// ---------- 結果の修正 ----------
+function startFix(m){
+  if (!m || m.st !== "d" || !m.evId) return toast("この結果は修正できません");
+  const l = m.w === m.a ? m.b : m.a;
+  choose(`<b>${esc(keyLabel(m.k))}・${POOL[m.pool]}</b><br>いまは <b>${nm(m.w, m.k)}</b> さんの勝ちになっています。<br>正しい勝者を選んでください。`, [
+    { label: nm(l, m.k) + " さんの勝ちに修正する", cls: "main", fn: () => confirmFix(m, l) },
+  ]);
+}
+function confirmFix(m, w){
+  const test = replay(evs.concat([{ id: "zz_test", t: lastT + 1, type: "fix", target: m.evId, w }]));
+  const lost = S.applied - test.applied;
+  const msg = `<b>${nm(w, m.k)}</b> さんの勝ちに修正しますか？` + (lost > 0
+    ? `<br><br><b class="red">この試合のあとに入力された ${lost} 試合の結果が取り消されます。</b><br><small>組み合わせが変わるため、その試合はもう一度行う必要があります。</small>`
+    : "");
+  ask(msg, "修正する", () => push({ type: "fix", target: m.evId, mid: m.id, w }));
+}
+
+function confirmClaim(k, i){
+  ask(`<b>${esc(keyLabel(k))}</b> を <b>${TNAME[i]}</b> で担当します。<br>よろしいですか？`, "はい、担当します", () => {
+    const cur = S.claim[i];
+    if (cur !== k) push({ type: "claim", k, table: i });
+    if (ui.hqPick){ ui.desk = "hq"; ui.hqPick = false; ui.tab = "match"; }
+    else { ui.desk = i; ui.deskKey = k; ui.tab = "desk"; }
+    ui.step = null; ui.fixedTable = null; saveRole(); render();
+  });
+}
+// ---------- 困ったときのメモ ----------
+function viewHelp(){
+  const q = (t, a) => `<div class="hq"><b>${t}</b><div>${a}</div></div>`;
+  return `<div class="card"><div class="bh"><b style="font-size:18px">困ったとき</b><button class="x2" data-a="help">閉じる</button></div>
+  ${q("結果を間違えて入力した", "その結果の横の「修正する」を押して、正しい勝者を選びます。台の担当は「この台の最近の結果」、本部は「試合入力」の「最近の結果」か「トーナメント表」から修正できます。")}
+  ${q("選手が来ない・けがをした", "本部の「トーナメント表」でそのクラスを選び、いちばん下の「棄権の処理」でその人の「棄権」を押します。試合中・試合待ちなら相手の勝ちになります。")}
+  ${q("ネットが切れた", "<b>ページは閉じずに</b>そのまま入力を続けてください。結果はその端末に保存され、つながったら自動で送られます。早くつなぎたいときは、近くの人のスマホのテザリングにつなぎます。")}
+  ${q("スマホの電池が切れた・壊れた", "別の端末でページを開き、「運営」→「台の担当」→ 同じクラス（「〇台で試合中」と出ています）→ 同じ台、の順に選ぶと続きから入力できます。直前の結果が出ているかを確認してから続けてください。")}
+  ${q("担当のクラスが終わった", "「次のクラスを選ぶ」を押して、「次はこれ」と出ているクラスを選びます。左がまだ残っていても、左が終わったクラスの右なら始められます。")}
+  ${q("台が空いているのに試合が入らない", "次の試合の選手が、ほかの台で試合中のことがあります（両腕・ダブルエントリーの人など）。画面に理由が出ているので、その試合が終わるのを待てば自動で入ります。")}
+  ${q("受付でクラスを間違えた・検量で体重がオーバーした", "本部の「出場登録」で、その人の「修正する」を押してクラスを直します。試合が始まったあとでも、まだ試合が始まっていないクラスになら移れます。−75のクラスに移るときは、検量の確認が出ます。")}
+  ${q("どうしてもわからない", "Claudeに「〇台でこうなった、どうすればいい？」と聞いてください。今の試合の状況を確かめてから、どのボタンを押せばいいかを答えます。")}
+  <button class="btn ghost" data-a="help">閉じる</button></div>`;
+}
+// ---------- 受付：入金と検量 ----------
+function startPay(pid){
+  const pl = S.players[pid]; if (!pl) return;
+  if (entryOK(pl)) return toast(`No.${noOf(pl)} ${pl.full}さんは、もうエントリー完了です`);
+  if (pl.paid && !(needWeigh(pl) && !pl.weighed)) return toast("入金済みです");
+  // −75の人は、検量のあとにお支払い
+  if (needWeigh(pl) && !pl.weighed) return askWeigh(pid);
+  choose(`<div class="paybox"><div class="sub">受付番号 ${noOf(pl)}</div><b>${rubyName(pl, true)}</b> さん<br><span class="sm">${esc(entryText(pl))}</span>
+    <div class="payamt">${handOf(pl)}　${feeOf(pl).toLocaleString()}円</div>お金を受け取りましたか？</div>`, [
+    { label: "お金を受け取りました", cls: "main", fn: () => { push({ type: "pay", pid, method: "cash" }); setTimeout(() => showDone(pid), 30); } },
+  ]);
+}
+// エントリー完了：自分で「次へ」を押すまで消えない画面
+function showDone(pid){
+  const pl = S.players[pid]; if (!pl) return;
+  choose(`<div class="paybox"><div class="donemark">✓</div><div class="donettl">エントリー完了しました</div>
+    <div class="sub">受付番号 ${noOf(pl)}</div><b class="big2">${rubyName(pl, true)} さん</b><br><span class="sm">${esc(entryText(pl))}</span>
+    <div class="sub" style="margin-top:8px">${handOf(pl)} ${feeOf(pl).toLocaleString()}円　受け取り済み</div></div>`, [
+    { label: "次の人の受付へ（出場登録に戻る）", cls: "go", fn: () => { ui.recMode = null; ui.f.f_search = ""; ui.q = ""; ui.skipCapture = true; window.scrollTo(0, 0); render(); } },
+  ], true);
+}
+function askWeigh(pid){
+  const pl = S.players[pid]; if (!pl) return;
+  const lc = pl.keys.filter(k => k.startsWith("S-75_") || k.startsWith("C-75_")).map(keyLabel).join("・");
+  choose(`<div class="paybox"><div class="sub">受付番号 ${noOf(pl)}　検量</div><b>${rubyName(pl, true)}</b> さん<br><span class="sm">${esc(entryText(pl))}</span>
+    <div class="payamt" style="color:var(--navy)">${esc(lc)}</div>検量（体重の確認）はパスしましたか？</div>`, [
+    { label: "はい、パスしました", cls: "main", fn: () => { push({ type: "weigh", pid }); setTimeout(() => startPay(pid), 50); } },
+    { label: "いいえ（体重オーバー）", cls: "ghost red2", fn: () => weighFail(pid) },
+  ]);
+}
+// 検量に失敗：−75 → 同じクラスの +75 へ
+function weighFail(pid){
+  const pl = S.players[pid]; if (!pl) return;
+  const entries = { L: (pl.en.L || []).slice(), R: (pl.en.R || []).slice() };
+  const moved = [];
+  ["L","R"].forEach(a => { entries[a] = entries[a].map(c => { if (c === "S-75" || c === "C-75"){ const n = c.replace("-75", "+75"); moved.push(n); return n; } return c; }); });
+  const toCls = [...new Set(moved)].map(clsLabel).join("・");
+  const newText = ["L","R"].filter(a => entries[a].length).map(a => armLabel(a) + "：" + entries[a].map(clsLabel).join("・")).join("　");
+  choose(`<div class="paybox"><b>${rubyName(pl, true)}</b> さんは −75 に出られません。<br><br><b class="big2">${esc(toCls)} にエントリーしますか？</b><br><span class="sm">変更後：${esc(newText)}</span></div>`, [
+    { label: `はい、${toCls} にする`, cls: "main", fn: () => {
+      push({ type: "edit", pid, last: pl.last, first: pl.first, kLast: pl.kLast, kFirst: pl.kFirst, dojo: pl.dojo, entries });
+      toast(toCls + " に変更しました"); setTimeout(() => startPay(pid), 50);
+    } },
+    { label: "クラスを選び直す", cls: "ghost", fn: () => { ui.tab = "entry"; ui.payAfterEdit = pid; act("edit", { pid, toArm: 1 }); } },
+    { label: "出場しない（登録を取り消す）", cls: "ghost red2", fn: () => cancelEntry(pid) },
+  ]);
+}
+// 出場をやめる人：お金は受け取らずに登録を取り消す
+function cancelEntry(pid){
+  const pl = S.players[pid]; if (!pl) return;
+  ask(`<b>${rubyName(pl, true)}</b> さんの登録を取り消しますか？<br><small>お金は受け取りません。出場者の一覧から消えます。</small>`, "取り消す", () => { push({ type: "remove", pid }); toast("登録を取り消しました"); });
+}
+function footer(){
+  if (mode === "loading" || !ui.role) return "";
+  let h = `<footer class="foot">`;
+  if (isDesk()) h += `<button class="btn sm2" data-a="pickmode" data-v="table">担当を変える</button>`;
+  h += `<button class="btn sm2" data-a="role" data-v="">トップページに戻る</button>`;
+  if (ui.role === "staff") h += `<button class="btn sm2 help" data-a="help">困ったとき</button>`;
+  h += `<button class="btn sm2 refresh" data-a="refresh">⟳ 更新</button>`;
+  if (isAdmin()) h += `<button class="btn sm2 danger" data-a="reset">全部リセット（テスト用）</button>`;
+  return h + `<div class="ver">画面の版：${APP_VER}</div></footer>`;
+}
+function modal(){
+  // お知らせ（toast）は別の場所に出して、画面全体を書き直さない（押している途中のボタンが消えないように）
+  const tEl = document.getElementById("toastbox");
+  if (tEl){ const th = note ? `<div class="toast">${esc(note)}</div>` : ""; if (tEl.innerHTML !== th) tEl.innerHTML = th; }
+  let h = "";
+  if (!modalBtns) return h;
+  // ボタンが3つ以上（縦に並ぶ）ときは「やめる」をいちばん下に。2つのときは左に「やめる」
+  const many = modalBtns.length > 2;
+  const btns = modalBtns.slice().sort((a, b) => many ? (a.fn ? 0 : 1) - (b.fn ? 0 : 1) : (a.fn ? 1 : 0) - (b.fn ? 1 : 0));
+  return h + `<div class="ov"><div class="md"><p>${modalText}</p><div class="mb ${btns.length > 2 ? "col2" : ""}">${btns.map(b => `<button class="btn ${b.cls}" data-a="mbtn" data-i="${modalBtns.indexOf(b)}">${b.label}</button>`).join("")}</div></div></div>`;
+}
+
+// 待っていた台に試合が入ったら、しばらく光らせて知らせる
+// （本当に3秒以上待っていたときだけ。読み込み直後や、自分で結果を入れた直後は光らせない）
+function trackDesk(){
+  if (!isDesk() || !dataReady) return;
+  const i = ui.desk, cur = S.tables[i] != null && S.m[S.tables[i]].k === ui.deskKey ? S.tables[i] : null;
+  const now = Date.now();
+  if (ui.deskSeenTable !== i){ ui.deskSeenTable = i; ui.deskSeen = cur; ui.nullSince = cur == null ? now : null; return; }
+  if (cur == null){ if (ui.deskSeen != null || ui.nullSince == null) ui.nullSince = now; }
+  else if (ui.deskSeen == null && ui.nullSince != null && now - ui.nullSince > 3000 && now - (ui.lastPush || 0) > 3000){
+    ui.flashUntil = now + 5000; setTimeout(render, 5100);
+    try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {}
+  }
+  // この台に新しい試合が入ったら、画面をいちばん上（いまの試合）に戻す
+  if (cur != null && cur !== ui.deskSeen) ui.scrollTop = true;
+  ui.deskSeen = cur;
+}
+function render(){
+  trackDesk();
+  const app = document.getElementById("app");
+  const FIELDS = ["f_last","f_first","f_klast","f_kfirst","f_dojo","f_search","f_pass"];
+  if (ui.skipCapture) ui.skipCapture = false;
+  else FIELDS.forEach(id => { const el = document.getElementById(id); if (el) ui.f[id] = el.value; });
+  const foc = document.activeElement && FIELDS.includes(document.activeElement.id) ? document.activeElement.id : null;
+  let body;
+  if (mode === "loading") body = '<div class="card center sub">読み込み中…</div>';
+  else if (!ui.role) body = viewRole();
+  else if (ui.role === "staff" && mode === "gas" && !ui.pass) body = viewPass();   // 運営は、本部も台の担当も、まずパスコード
+  else if (ui.role === "staff" && ui.desk == null && ui.step === "class") body = viewClassPick();
+  else if (ui.role === "staff" && ui.desk == null && ui.step === "table") body = viewTablePick();
+  else if (ui.role === "staff" && ui.desk == null) body = viewDeskPick();
+  else body = null;
+  if (ui.help && body == null) body = viewHelp();
+  // 中身が変わらないときは書き直さない（ほかの端末からの更新で、押しかけたボタンが消えないように）
+  const put = html => { if (html !== ui.lastHtml){ ui.lastHtml = html; app.innerHTML = html; } };
+  if (body != null) put(header() + practiceBan() + `<main>${body}</main>` + modal());
+  else {
+    const t = tabs();
+    const v = ui.tab === "desk" ? viewDesk() : ui.tab === "self" ? viewSelfEntry() : ui.tab === "match" ? viewMatch() : ui.tab === "class" ? viewClass() : viewEntry();
+    put(header() + banners() + t + `<main>${v}</main>` + footer() + modal());
+  }
+  FIELDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ui.f[id] || ""; });
+  if (document.getElementById("f_dojo")) markDojo();
+  if (foc){ const el = document.getElementById(foc); if (el){ el.focus(); try { const n = el.value.length; el.setSelectionRange(n, n); } catch (e) {} } }
+  if (ui.scrollTop && ui.tab === "desk" && !modalBtns){ ui.scrollTop = false; window.scrollTo(0, 0); }
+  // 画面（役割・担当・タブ・選ぶ画面）が切り替わったら、必ずいちばん上から見せる
+  const vk = [ui.role, ui.desk, ui.deskKey, ui.step, ui.tab, ui.help ? 1 : 0, mode].join("|");
+  if (vk !== ui.lastView){ ui.lastView = vk; window.scrollTo(0, 0); }
+}
+function viewMatch(){
+  let h = "";
+  const np = Object.keys(S.players).length;
+  if (!S.started){
+    h += `<div class="card center"><p class="big">まだ試合は始まっていません</p><p>受付済み：${np}人</p>
+      ${isAdmin() ? `<p class="sub">「出場登録」タブで選手を登録してから、試合開始を押してください。</p>` : ""}</div>`;
+    return h;
+  }
+  // 決勝
+  const oi = k => S.order.indexOf(k);
+  const fins = S.finalOrder.map(i => S.m[i]).sort((x, y) => oi(x.k) - oi(y.k) || x.id - y.id);
+  const curF = fins.find(m => m.st !== "d");
+  if (S.finals){
+    h += `<h2>決勝</h2>`;
+    if (curF) h += matchCard(curF, "いまの決勝");
+    else if (fins.length) h += `<div class="card center sub">決勝待ちの試合はありません</div>`;
+    const waitF = fins.filter(m => m.st !== "d" && m !== curF);
+    if (waitF.length) h += `<div class="card"><div class="lbl">このあとの決勝</div>${waitF.map(m => `<div class="row"><span>${esc(keyLabel(m.k))}</span><span>${nm(m.a, m.k)} vs ${nm(m.b, m.k)}</span></div>`).join("")}</div>`;
+  }
+  // 台（クラスごとに担当）
+  const anyPrelim = KEYS.some(k => Object.keys(S.br[k].ent).length && !prelimDone(S.br[k]));
+  if (anyPrelim){
+    h += `<h2>予選</h2>`;
+    // 選手・観客の画面では、いま試合をしている台だけ出す
+    if (!isAdmin() && !S.tables.some(x => x != null)) h += `<div class="card center sub">いま試合中の台はありません。次の試合が始まるまでお待ちください。</div>`;
+    for (let i = 0; i < TABLES; i++){
+      const mid = S.tables[i], c = S.tableKey[i];
+      if (!isAdmin() && mid == null) continue;
+      h += `<div class="tg"><div class="th"><b>${TNAME[i]}</b>${c ? `<span class="tk">${esc(keyLabel(c))}</span>` : `<span class="sm">${isAdmin() ? "クラス未選択" : "準備中"}</span>`}${isAdmin() ? `<button class="x2 thb" data-a="hqpick" data-v="${i}">クラスを選ぶ</button>` : ""}</div>`;
+      h += mid == null ? `<div class="mc empty"><div class="sub center" style="padding-top:12px">${isAdmin() ? "空き" : "次の試合の準備中"}</div>${c && !prelimDone(S.br[c]) ? `<div class="center" style="padding:0 12px">${waitReason(i, c)}</div>` : ""}</div>` : matchCard(S.m[mid], "いまの試合");
+      const q = tableQueue(S, i);
+      if (q.length) h += `<div class="nx"><span class="sm">次</span>${q.slice(0, 2).map(m => `<span>${nm(m.a, m.k)} vs ${nm(m.b, m.k)}<small>${esc(keyLabel(m.k))}・${POOL[m.pool]}</small></span>`).join("")}</div>`;
+      h += `</div>`;
+    }
+  }
+  // 決勝開始ボタン
+  const used = KEYS.filter(k => Object.keys(S.br[k].ent).length);
+  const rd = used.filter(k => S.br[k].ready || S.br[k].champ).length;
+  if (!S.finals){
+    // 決勝は、全クラスの予選が終わってから
+    const allDone = used.length && rd === used.length;
+    h += `<div class="card center"><p>予選が終わったクラス：${rd} / ${used.length} クラス</p>
+      ${isAdmin() ? (allDone ? `<button class="btn main" data-a="finals">決勝を始める</button>`
+        : `<button class="btn main" disabled>決勝を始める</button><p class="sub">全クラスの予選が終わると押せるようになります（あと${used.length - rd}クラス）。</p>`) : ""}</div>`;
+  }
+  if (isAdmin()){
+    const done = S.m.filter(m => m.st === "d").sort((x, y) => (y.te || 0) - (x.te || 0)).slice(0, 8);
+    if (done.length) h += `<div class="card"><div class="lbl">最近の結果（まちがえたら「修正する」）</div>${done.map(m => resultRow(m, true)).join("")}
+      <div class="sub" style="margin-top:6px">もっと前の結果は「トーナメント表」のタブから修正できます。</div></div>`;
+  }
+  if (isAdmin()) h += `<div class="card center"><button class="btn ghost" data-a="sim">テスト用：決勝まで全部ランダムで終わらせる</button></div>`;
+  return h;
+}
+
+// ---------- 大会の結果を書き出す ----------
+function plainName(p){ const pl = S.players[p]; return pl ? pl.full + (pl.dojo ? "（" + pl.dojo + "）" : "") : "?"; }
+function resultsText(all){
+  let t = "第3回 関谷塾杯 結果\n";
+  S.order.filter(k => used(S, k)).forEach(k => {
+    const b = S.br[k]; t += "\n【" + keyLabel(k) + "】\n";
+    if (!b.champ){ t += "（まだ終わっていません）\n"; return; }
+    const rows = Object.keys(b.ent).map(p => ({ p, r: rankOf(S, b, p), rc: record(S, k, p) })).filter(x => x.r).sort((x, y) => x.r.r - y.r.r);
+    rows.filter(x => all || x.r.r <= 3).forEach(x => { t += (x.r.tie ? "同率" : "") + x.r.r + "位　" + plainName(x.p) + (all ? "　" + (x.rc.w + x.rc.l) + "戦" + x.rc.w + "勝" + x.rc.l + "敗" : "") + "\n"; });
+  });
+  return t;
+}
+// 大会の結果を書き出す：全クラスの順位が決まったら、トーナメント表のいちばん下に出す（本部だけ）
+function resultsCard(){
+  const used_ = KEYS.filter(k => used(S, k)); if (!used_.length || !S.started || !isAdmin()) return "";
+  if (used_.some(k => !S.br[k].champ)) return "";
+  return `<div class="card"><div class="lbl">大会の結果を書き出す</div>
+    <p class="sub">全クラスの順位が決まりました。LINEやSNSに貼れる文章をコピーできます。</p>
+    <div class="mb"><button class="btn ghost" data-a="copyres" data-v="top">表彰（1〜3位）をコピー</button><button class="btn ghost" data-a="copyres" data-v="all">全員の順位をコピー</button></div>
+    ${ui.resText ? `<textarea class="restext" readonly>${esc(ui.resText)}</textarea><p class="sub">うまくコピーできないときは、上の文章を長押しして選んでコピーしてください。</p>` : ""}</div>`;
+}
+
+function statusOf(b){
+  if (!Object.keys(b.ent).length) return ["", "出場者なし"];
+  if (b.champ) return ["done", "終了"];
+  if (b.hasF) return ["fin", "決勝"];
+  if (b.ready) return ["ready", "決勝待ち"];
+  if (!S.started) return ["none", "受付中"];
+  return begun(S, b.k) ? ["go", "予選中"] : ["none", "順番待ち"];
+}
+
+function viewClass(){ return viewClassBody() + resultsCard(); }
+function viewClassBody(){
+  let h = `<div class="guide">クラスを選択してください</div>
+    <div class="legend"><span><i class="dot go"></i>予選中</span><span><i class="dot ready"></i>決勝待ち・決勝中</span><span><i class="dot done"></i>終了（順位が決定）</span><span><i class="dot none"></i>まだ始まっていない</span></div>
+    <div class="chips">${KEYS.map(k => { const b = S.br[k]; const n = Object.keys(b.ent).length; const s = statusOf(b);
+    return `<button data-a="br" data-v="${k}" class="chip ${ui.br === k ? "on" : ""} ${n ? "" : "dim"}"><span class="dot ${s[0]}"></span>${esc(keyLabel(k))}<small>${n}人</small></button>`; }).join("")}</div>`;
+  const b = S.br[ui.br]; const ids = Object.keys(b.ent);
+  const s = statusOf(b);
+  h += `<div class="card"><div class="bh"><b>${esc(keyLabel(ui.br))}</b><span class="st ${s[0]}">${s[1]}</span></div>`;
+  if (!ids.length){ return h + `<p class="sub">このクラスの出場者はまだいません。</p></div>`; }
+  h += `</div>`;
+  if (!S.started){ return h + `<div class="card sub center">試合が始まるとトーナメント表が出ます。</div>`; }
+  h += bracketView(b, "W") + bracketView(b, "L");
+  const fins = S.m.filter(m => m.k === b.k && (m.pool === "F" || m.pool === "F2"));
+  if (fins.length || b.ready){
+    h += `<div class="card"><div class="lbl">決勝</div><div class="bk"><div class="col"><div class="its">${fins.map(m => box(m)).join("") || '<div class="sub">決勝待ち（最後にまとめて行います）</div>'}</div></div></div>
+      <div class="sub">敗者復活戦から来た人は、2連勝で優勝です。</div></div>`;
+  }
+  if (b.champ || b.ready || b.third){
+    h += `<div class="card"><div class="lbl">表彰（1〜3位）</div><div class="rank">
+      <div class="r1"><span>1位</span>${b.champ ? fullSen(b.champ) + rk(b.k, b.champ) : "決勝で決定"}</div>
+      <div class="r2"><span>2位</span>${b.second ? fullSen(b.second) + rk(b.k, b.second) : "決勝で決定"}</div>
+      ${(() => { const th = b.champ ? Object.keys(b.ent).filter(p => { const r = rankOf(S, b, p); return r && r.r === 3; }) : (b.third ? [b.third] : []);
+        return th.length ? th.map(p => `<div class="r3"><span>${th.length > 1 ? "同率3位" : "3位"}</span>${fullSen(p)}${rk(b.k, p)}</div>`).join("") : `<div class="r3"><span>3位</span>—</div>`; })()}</div></div>`;
+  }
+  h += standings(b);
+  if (isAdmin() && !b.champ){
+    const alive = ids.filter(p => !b.ent[p].out);
+    h += `<div class="card"><div class="lbl">棄権の処理（残っている人）</div><div class="pcs">${alive.map(p => `<span class="pc ${b.ent[p].losses ? "l" : "w"}">${nm(p, b.k)}<button data-a="wd" data-pid="${p}" data-k="${b.k}">棄権</button></span>`).join("")}</div></div>`;
+  }
+  return h;
+}
+
+// 表彰と順位：フルネーム＋「選手」
+function fullSen(p){ const pl = S.players[p]; return pl ? `<span class="nmw"><span class="nmn">${rubyName(pl, true)} 選手</span>${pl.dojo ? `<span class="dj">${esc(pl.dojo)}</span>` : ""}</span>` : "?"; }
+function standings(b){
+  const ids = Object.keys(b.ent);
+  const rows = ids.map(p => ({ p, r: record(S, b.k, p), e: b.ent[p], rank: rankOf(S, b, p) }));
+  const key = x => x.rank ? x.rank.r : (x.e.losses === 0 ? -2 : -1);
+  rows.sort((x, y) => key(x) - key(y) || y.r.w - x.r.w || x.r.l - y.r.l);
+  const lab = x => x.rank ? (x.rank.tie ? "同率" : "") + x.rank.r + "位" : x.e.losses === 0 ? "本戦" : "敗者復活戦";
+  const cls = x => x.rank ? (x.rank.r <= 3 ? "s-" + x.rank.r + "位" : "s-rank") : x.e.losses === 0 ? "s-本戦" : "s-敗者復活戦";
+  return `<div class="card"><div class="lbl">順位と成績（${esc(keyLabel(b.k))}だけの勝敗）</div>${rows.map(x => `<div class="row"><span class="stg ${cls(x)}">${lab(x)}</span><span class="grow"><b>${fullSen(x.p)}</b>${x.e.wd ? "<em>棄権</em>" : ""}</span><span class="rec2">${x.r.w + x.r.l}戦${x.r.w}勝${x.r.l}敗</span></div>`).join("")}
+    ${b.champ ? "" : '<div class="sub" style="margin-top:6px">負けた人の順位は、その時点で決まります。残っている人の順位は決勝のあとに決まります。</div>'}</div>`;
+}
+function box(m){
+  const row = p => {
+    const cls = m.st === "d" ? (m.w === p ? "win" : "lose") : "";
+    return `<div class="br-r ${cls}"><span>${nm(p, m.k)}</span>${m.st === "d" && m.w === p ? "<i>勝</i>" : ""}</div>`;
+  };
+  const tag = m.st === "p" ? `<div class="bt now">${TNAME[m.table]}で試合中</div>` : m.st === "q" ? `<div class="bt">待ち</div>` : m.wd ? `<div class="bt">棄権</div>` : "";
+  const fx = isAdmin() && m.st === "d" && !m.wd && m.evId ? `<button class="bfix" data-a="fix" data-mid="${m.id}">修正する</button>` : "";
+  return `<div class="bx ${m.st === "p" ? "playing" : ""}">${m.pool === "F2" ? '<div class="bt">2試合目</div>' : ""}${row(m.a)}${row(m.b)}${tag}${fx}</div>`;
+}
+function bracketView(b, pool){
+  const R = b.rounds[pool];
+  if (!R.length) return pool === "L" ? `<div class="card"><div class="lbl">敗者復活戦</div><div class="sub">本戦で負けた人がここに入ります。</div></div>` : "";
+  const cols = R.map((round, r) => `<div class="col"><div class="ch">${pool === "W" ? "" : "敗者復活 "}${r + 1}回戦</div><div class="its">${round.map(it => it.bye
+    ? `<div class="bx bye"><div class="br-r"><span>${nm(it.bye, b.k)}</span></div><div class="bt">不戦勝</div></div>` : box(S.m[it.mid])).join("")}</div></div>`).join("");
+  const alive = Object.keys(b.ent).filter(p => !b.ent[p].out && b.ent[p].losses === (pool === "W" ? 0 : 1));
+  const lastDone = R[R.length - 1].every(it => it.bye || S.m[it.mid].st === "d");
+  const tail = lastDone && alive.length === 1 && b.ready ? `<div class="col"><div class="ch">${pool === "W" ? "本戦 1位通過" : "敗者復活 通過"}</div><div class="its"><div class="bx adv"><div class="br-r win"><span>${nm(alive[0], b.k)}</span></div><div class="bt">決勝へ</div></div></div></div>` : "";
+  return `<div class="card"><div class="lbl">${pool === "W" ? "本戦（負けたら敗者復活戦へ）" : "敗者復活戦（負けたら終了）"}</div><div class="bk">${cols}${tail}</div>
+    <div class="sub sw">横にスクロールできます →</div></div>`;
+}
+
+// ---------- 登録の入力欄（本部・選手の自己登録で共通） ----------
+function regForm(selfMode){
+  const ed = !selfMode && ui.editPid && S.players[ui.editPid] ? S.players[ui.editPid] : null;
+  // 試合開始のあとの修正：試合が始まっているクラスからは動かせない・移れない
+  const after = ed && S.started && !ed.excluded;
+  const curBegun = a => after && (ed.en[a] || []).some(c => begun(S, c + "_" + a));
+  // 試合開始のあとに新しく登録する人（遅刻など）：もう始まっているクラスは選べない
+  const late = S.started && (!ed || ed.excluded);
+  const lockC = (a, c) => (after && (curBegun(a) || (c && begun(S, c + "_" + a)))) || (late && c && begun(S, c + "_" + a));
+  const armRow = (a, label) => `<div class="lbl" id="arm_${a}">${label}</div><div class="opts">
+      <button data-a="ent" data-arm="${a}" data-v="" class="opt off ${!(ui["e" + a] || []).length ? "on" : ""}" ${lockC(a, "") ? "disabled" : ""}>出ない（No Entry）</button>
+      ${CLS.map(c => `<button data-a="ent" data-arm="${a}" data-v="${c[0]}" class="opt ${(ui["e" + a] || []).includes(c[0]) ? "on" : ""}" ${lockC(a, c[0]) ? "disabled" : ""}>${c[1]}${late && begun(S, c[0] + "_" + a) ? '<small class="ongo">試合中</small>' : ""}</button>`).join("")}</div>
+      ${late && CLS.some(c => begun(S, c[0] + "_" + a)) ? `<div class="sub">「試合中」のクラスは、もう始まっているので選べません。まだ始まっていない上のクラスなら出られます。</div>` : ""}
+      ${curBegun(a) ? `<div class="sub">この腕のクラスはもう試合が始まっているので、変更できません。</div>` : ""}`;
+  const nL = (ui.eL || []).length ? 1 : 0, nR = (ui.eR || []).length ? 1 : 0;
+  const feeNow = nL + nR === 2 ? `ツーハンド（両腕）${FEE_TWO.toLocaleString()}円` : nL + nR === 1 ? `ワンハンド（片腕）${FEE_ONE.toLocaleString()}円` : "";
+  return `<div class="card ${ed ? "editing" : ""}" id="regcard"><div class="lbl">${ed ? `名前を修正（Edit）：<b>${rubyName(ed, true)}</b>` : "名前を登録（Name）"}</div>
+    <div class="nmrow"><div class="fw"><div class="sl">名字（Family Name）</div><input id="f_last" class="fi" type="text" autocomplete="off" maxlength="20">
+        <div class="sl kl">名字のふりがな</div><input id="f_klast" class="fi kana" type="text" autocomplete="off" maxlength="20" placeholder="例：やまだ"></div>
+      <div class="fw"><div class="sl">名前（First Name）</div><input id="f_first" class="fi" type="text" autocomplete="off" maxlength="20">
+        <div class="sl kl">名前のふりがな</div><input id="f_kfirst" class="fi kana" type="text" autocomplete="off" maxlength="20" placeholder="例：たろう"></div></div>
+    <p class="sub">ふりがなは、ひらがなで入れてください。外国の方は、呼び名やニックネームでもOKです。<br>Please write the reading of your name in hiragana. Nicknames are OK.</p>
+    <div class="sl">所属道場（任意）／Team・Gym (optional)</div><input id="f_dojo" class="fi" type="text" autocomplete="off" maxlength="30" placeholder="例：〇〇アームレスリング道場">${dojoChips()}
+    ${armRow("L", "左腕のクラス（Left Arm）")}
+    ${armRow("R", "右腕のクラス（Right Arm）")}
+    ${feeNow && !ed ? `<div class="feenow">エントリー費：<b>${feeNow}</b><small>当日、受付でお支払いください（Entry fee, pay at the reception）${["L","R"].some(a => (ui["e" + a] || []).some(c => c === "S-75" || c === "C-75")) ? "<br>−75のクラスは、先に検量（体重の確認）をしてからお支払いです" : ""}</small></div>` : ""}
+    ${after ? `<p class="sub">試合開始のあとは、まだ試合が始まっていないクラスにだけ移れます（薄い色のボタンは選べません）。</p>` : ""}
+    ${ed ? `<div class="mb"><button class="btn ghost" data-a="editcancel">やめる（Cancel）</button><button class="btn main" data-a="editsave">修正を保存（Save）</button></div>`
+         : `<button class="btn main" data-a="reg" data-self="${selfMode ? 1 : ""}">登録する（Register）</button>`}
+    ${!selfMode && !S.started && !ed ? `<button class="btn ghost" data-a="demo">テスト用の選手を65人入れる</button>` : ""}
+  </div>`;
+}
+// 受付の状態
+// もう登録されている道場名をボタンで出す（押すと同じ書き方で入る）
+function dojoChips(){
+  const g = {};
+  Object.values(S.players).forEach(p => { if (!p.dojo || !dojoKey(p.dojo)) return; const k = dojoKey(p.dojo); (g[k] = g[k] || {}); g[k][p.dojo] = (g[k][p.dojo] || 0) + 1; });
+  const list = Object.values(g).map(v => { const names = Object.keys(v).sort((a, b) => v[b] - v[a]); return { name: names[0], n: names.reduce((t, x) => t + v[x], 0) }; })
+    .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name, "ja")).slice(0, 24);
+  const cur = (ui.f.f_dojo || "").trim();
+  const names = ["無所属"].concat(list.map(d => d.name));
+  return `<div class="sub" style="margin:8px 0 4px">ここから選べます（押すと上の欄に入ります）／Tap to choose</div>
+    <div class="djchips">${names.map(n => `<button type="button" class="djchip ${n === cur ? "on" : ""}" data-a="dojopick" data-v="${esc(n)}">${esc(n)}</button>`).join("")}</div>`;
+}
+function statusBadges(pl){
+  let h = "";
+  if (needWeigh(pl)) h += pl.weighed ? `<span class="bdg ok">検量OK</span>` : `<span class="bdg ng">検量まだ</span>`;
+  h += pl.paid ? `<span class="bdg ok">入金済み</span>` : `<span class="bdg ng">未払い ${feeOf(pl).toLocaleString()}円</span>`;
+  if (entryOK(pl)) h += `<span class="bdg done">エントリー完了</span>`;
+  if (pl.refund) h += `<span class="bdg ng">返金 ${pl.refund.toLocaleString()}円（${(pl.dropped || []).map(keyLabel).join("・")}に出ない）</span>`;
+  if (pl.missed && pl.missed.length) h += `<span class="bdg ng">${pl.missed.map(keyLabel).join("・")}は受付が間に合わず出場なし</span>`;
+  return h;
+}
+function playerSort(ids){
+  const coll = new Intl.Collator("ja");
+  const lat = s => /^[\x00-\x7F]/.test(s);
+  const key = pl => (pl.kLast || pl.last || "") + " " + (pl.kFirst || pl.first || "");
+  return ids.sort((x, y) => { const a = S.players[x], b = S.players[y]; const la = lat(key(a)), lb = lat(key(b)); if (la !== lb) return la ? 1 : -1; return coll.compare(key(a), key(b)); });
+}
+function entryText(pl){ return ["L","R"].filter(a => pl.en[a] && pl.en[a].length).map(a => armLabel(a) + "：" + pl.en[a].map(clsLabel).join("・")).join("　"); }
+
+function viewEntry(){
+  let h = "", statusHtml = "";
+  const all = Object.keys(S.players);
+  if (isAdmin()){
+    // 受付の最初の質問：受付番号はありますか？
+    if (ui.editPid) h += regForm(false);
+    else if (ui.recMode === "no") h += `<div class="card rq"><div class="bh"><b>受付番号なし → 新しく登録</b><button class="x2" data-a="recmode" data-v="">最初に戻る</button></div></div>` + regForm(false);
+    else if (ui.recMode === "yes") h += `<div class="card rq"><div class="bh"><b>受付番号あり → 番号で探す</b><button class="x2" data-a="recmode" data-v="">最初に戻る</button></div>
+      <div class="sl">受付番号（または名前・ふりがな）</div><div class="srow"><input id="f_search" class="fi bigsearch" type="search" inputmode="numeric" enterkeyhint="search" autocomplete="off" placeholder="例：23"><button class="sbtn" data-a="search">検索</button></div>
+      <p class="sub">番号を入れて「検索」を押すと、その人が出ます。「検量」か「入金」を押して受付を進めてください。</p></div>`;
+    else h += `<div class="card center rq"><p class="big">受付番号はありますか？</p><p class="sub">選手に「QRコードで登録して、受付番号の画面がありますか？」と聞いてください</p>
+      <div class="mb"><button class="btn main" data-a="recmode" data-v="yes">はい（番号あり）</button><button class="btn go" data-a="recmode" data-v="no">いいえ（新しく登録）</button></div>
+      ${!S.started ? `<button class="btn ghost" data-a="demo">テスト用の選手を65人入れる</button>` : ""}</div>`;
+    statusHtml = (() => { let h = "";
+    // 受付の集計
+    const paid = all.filter(p => S.players[p].paid);
+    const sum = a => a.reduce((t, p) => t + feeOf(S.players[p]), 0);
+    const done = all.filter(p => entryOK(S.players[p]));
+    const wq = all.filter(p => needWeigh(S.players[p]) && !S.players[p].weighed).length;
+    const rf = all.reduce((t, p) => t + (S.players[p].refund || 0), 0);
+      h += `<div class="card"><div class="lbl">受付の状況</div>
+      <div class="tot"><div><b>${done.length}</b><span>エントリー完了</span></div><div><b>${all.length - done.length}</b><span>受付まだ</span></div>
+      <div><b>${wq}</b><span>検量まだ</span></div><div><b>${paid.reduce((t, p) => t + (S.players[p].keys.length || !S.started ? feeOf(S.players[p]) : 0), 0).toLocaleString()}円</b><span>受け取った金額（${paid.length}人）${rf ? `<br>返金した ${rf.toLocaleString()}円は引いてあります` : ""}</span></div></div></div>`;
+    if (!S.started && !ui.editPid){
+      const nd = all.filter(p => !entryOK(S.players[p]));
+      const ndW = nd.filter(p => needWeigh(S.players[p]) && !S.players[p].weighed).length, ndP = nd.length - ndW;
+      if (!all.length) h += "";
+      else if (nd.length) h += `<div class="card center"><p class="sub"><b class="red">受付が終わっていない人が、あと${nd.length}人います</b><br>（${[ndW ? "検量まだ " + ndW + "人" : "", ndP ? "未払い " + ndP + "人" : ""].filter(Boolean).join("・")}）<br>全員の受付が終わるか、来ない人・出ない人を削除すると、いちばん下に「受付を締め切って試合開始」のボタンが出ます。</p>
+        <button class="btn main" data-a="shownotdone">受付が終わっていない人を見る</button></div>`;
+    }
+      return h; })();
+    if (ui.recMode !== "yes") h += statusHtml;
+  }
+  // 出場者の一覧
+  const sel = ui.entBr || "all";
+  const st = ui.entSt || "all";
+  if (isAdmin() && ui.recMode !== "yes"){
+    h += `<div class="card"><div class="lbl">受付番号・名前・ふりがなで探す</div><div class="srow"><input id="f_search" class="fi" type="search" enterkeyhint="search" autocomplete="off" placeholder="例：23　または　やまだ"><button class="sbtn" data-a="search">検索</button></div>
+      <div class="opts" style="margin-top:8px">${[["all","すべて"],["weigh","検量の受付（検量まだ）"],["unpaid","お金の受付（未払い）"],["done","エントリー完了"]].map(x => `<button class="opt ${st === x[0] ? "on" : ""}" data-a="entst" data-v="${x[0]}">${x[1]}</button>`).join("")}</div></div>`;
+  }
+  if (!(isAdmin() && ui.recMode === "yes")) h += `<div class="guide">クラスを選択してください</div>${S.started ? `<div class="legend"><span><i class="dot go"></i>予選中</span><span><i class="dot ready"></i>決勝待ち・決勝中</span><span><i class="dot done"></i>終了（順位が決定）</span><span><i class="dot none"></i>まだ始まっていない</span></div>` : ""}<div class="chips"><button data-a="entbr" data-v="all" class="chip ${sel === "all" ? "on" : ""}">すべて<small>${all.length}人</small></button>${KEYS.map(k => { const n = all.filter(p => S.players[p].keys.includes(k) || (S.players[p].excluded && entryKeys(S.players[p].en).includes(k))).length;
+    return `<button data-a="entbr" data-v="${k}" class="chip ${sel === k ? "on" : ""} ${n ? "" : "dim"}">${S.started ? `<span class="dot ${statusOf(S.br[k])[0]}"></span>` : ""}${esc(keyLabel(k))}<small>${n}人</small></button>`; }).join("")}</div>
+    <button class="btn main" data-a="golist" style="margin:4px 0 14px">検索（このクラスの人を見る）</button>`;
+  const q = (ui.q || "").trim().normalize("NFKC").toLowerCase();
+  const yesWait = isAdmin() && ui.recMode === "yes" && !q;
+  let ps = all.filter(p => { const pl = S.players[p];
+    if (!isAdmin() && S.started && pl.excluded) return false;
+    // 検索しているときは、絞りこみ（クラス・未払いなど）を無視して全員から探す
+    if (!q){
+      if (sel !== "all" && !entryKeys(pl.en).includes(sel)) return false;
+      if (st === "unpaid" && (pl.paid || (needWeigh(pl) && !pl.weighed))) return false;
+      if (st === "weigh" && !(needWeigh(pl) && !pl.weighed)) return false;
+      if (st === "done" && !entryOK(pl)) return false;
+      if (st === "notdone" && entryOK(pl)) return false;
+    }
+    if (q){ const hay = [String(pl.no), pl.full, pl.kLast + pl.kFirst, (pl.kLast || "") + " " + (pl.kFirst || ""), pl.dojo].join(" ").normalize("NFKC").toLowerCase(); if (!hay.includes(q)) return false; }
+    return true; });
+  if (q && /^\d+$/.test(q)){ const ex = ps.filter(p => String(S.players[p].no) === q); ps = ex.length ? ex : ps.sort((x, y) => S.players[x].no - S.players[y].no); }
+  else ps = playerSort(ps);
+  if (yesWait) ps = [];
+  h += `<div class="card" id="results"><div class="lbl">${q ? `検索結果 ${ps.length}人（「${esc(ui.q)}」）` : yesWait ? "検索結果" : `出場者 ${ps.length}人${sel === "all" ? "" : "（" + esc(keyLabel(sel)) + "）"}${st === "notdone" ? "（受付が終わっていない人）" : ""}`}</div>
+    ${q ? `<div class="srchnote">検索中は、全員の中から探しています（絞りこみは使っていません）<button class="x2" data-a="clearsearch">検索をやめる</button></div>` : ""}`;
+  if (yesWait) h += `<p class="sub">番号を入れて「検索」を押してください。</p>`;
+  if (!ps.length && !yesWait){
+    const STN = { weigh: "検量の受付", unpaid: "お金の受付", done: "エントリー完了", notdone: "受付が終わっていない人" };
+    const conds = [q ? "「" + ui.q + "」" : "", st !== "all" ? STN[st] : "", sel !== "all" ? keyLabel(sel) : ""].filter(Boolean).join("・");
+    h += `<p class="sub">${all.length ? (q ? "この番号・名前の人は見つかりませんでした。番号をもう一度確かめてください。" : "条件に合う人はいません。") : "まだ登録がありません。"}</p>`;
+    if (all.length && conds) h += `<p class="sub">今の条件：${esc(conds)}</p><button class="btn ghost" data-a="clearfilt">条件を全部はずす（全員を見る）</button>`;
+  }
+  ps.forEach(p => { const pl = S.players[p];
+    h += `<div class="row prow"><span class="pno">${noOf(pl)}</span><span class="grow"><b>${rubyName(pl, true)}</b>${pl.dojo ? `<span class="dj">${esc(pl.dojo)}</span>` : ""}<br><span class="sm">${esc(entryText(pl))}</span>
+      ${isAdmin() ? `<div class="bdgs">${statusBadges(pl)}</div>` : ""}</span>
+      ${isAdmin() ? `<span class="pbtns">${needWeigh(pl) && !pl.weighed ? `<button class="x2 payb" data-a="weigh" data-pid="${p}">検量</button>` : !pl.paid ? `<button class="x2 payb" data-a="pay" data-pid="${p}">入金</button>` : ""}<button class="x2" data-a="edit" data-pid="${p}">修正する</button>${!S.started || pl.excluded ? `<button class="x" data-a="del" data-pid="${p}">削除</button>` : ""}</span>` : ""}</div>`; });
+  h += `</div>`;
+  if (isAdmin() && ui.recMode === "yes") h += statusHtml;
+  // 試合開始のボタンは、全員の受付が終わったときだけ、いちばん下に出す
+  if (isAdmin() && !S.started && !ui.editPid && all.length && all.every(p => entryOK(S.players[p])))
+    h += `<div class="card center startcard"><p class="sub"><b>全員の受付が終わりました</b>（${all.length}人）</p><button class="btn go" data-a="start">受付を締め切って試合開始</button></div>`;
+  return h;
+}
+
+// ---------- 選手が自分で登録する画面 ----------
+function viewSelfEntry(){
+  let h = `<div class="card center"><p class="big">出場登録（Entry）</p><p class="sub">名前とクラスを入れて「登録する」を押してください。<br>Enter your name and class, then press Register.</p></div>`;
+  const mine = (ui.my || []).filter(p => S.players[p]);
+  mine.slice().reverse().forEach(p => { const pl = S.players[p];
+    h += `<div class="card mycard ${entryOK(pl) ? "ok" : ""}"><div class="mynohead">受付番号（No.）</div><div class="myno">${noOf(pl)}</div>
+      <div class="myname">${rubyName(pl, true)} さん</div><div class="sub center">${esc(entryText(pl))}</div>
+      ${entryOK(pl) ? `<div class="mystat ok">エントリー完了 ✓<small>Entry completed</small></div>`
+        : needWeigh(pl) && !pl.weighed
+          ? `<div class="mystat">まず「検量の受付」に並んで、体重の確認をしてください<small>Please go to the weigh-in first.</small></div>
+             <div class="sub center" style="margin-top:8px">検量のあとに、エントリー費（${handOf(pl)} ${feeOf(pl).toLocaleString()}円）をお支払いいただきます</div>`
+          : `<div class="myfee">${handOf(pl)} <b>${feeOf(pl).toLocaleString()}円</b></div>
+             <div class="mystat">この画面を受付に見せて、お支払いください<small>Please show this screen at the reception and pay.</small></div>`}
+    </div>`; });
+  if (!mine.length || ui.selfMore) h += regForm(true);
+  else h += `<div class="card center"><button class="btn ghost" data-a="selfmore">もう1人登録する（Register another person）</button></div>`;
+  return h;
+}
+
+const DEMO_FIRST = "太郎 次郎 健太 翔 拓也 直樹 亮 誠 隆 剛 優 浩二 和也 雄一 蓮 陸 悠斗 颯 湊 悠真 大樹 翔太 健一 修 学 勇気 達也 智也 慎吾 光 一郎 正樹 哲也 康平 竜也".split(" ");
+Object.assign(typeof KANA_ADD === "undefined" ? (globalThis.KANA_ADD = {}) : KANA_ADD, {"大樹":"だいき","翔太":"しょうた","健一":"けんいち","修":"おさむ","学":"まなぶ","勇気":"ゆうき","達也":"たつや","智也":"ともや","慎吾":"しんご","光":"ひかる","一郎":"いちろう","正樹":"まさき","哲也":"てつや","康平":"こうへい","竜也":"たつや"});
+const DEMO = "佐藤 鈴木 高橋 田中 伊藤 渡辺 山本 中村 小林 加藤 吉田 山田 佐々木 山口 松本 井上 木村 林 斎藤 清水 山崎 森 池田 橋本 阿部 石川 山下 中島 石井 小川 前田 岡田 長谷川 藤田 後藤 近藤 村上 遠藤 青木 坂本".split(" ");
+const newId = () => "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+const KANA = {"佐藤":"さとう","鈴木":"すずき","高橋":"たかはし","田中":"たなか","伊藤":"いとう","渡辺":"わたなべ","山本":"やまもと","中村":"なかむら","小林":"こばやし","加藤":"かとう","吉田":"よしだ","山田":"やまだ","佐々木":"ささき","山口":"やまぐち","松本":"まつもと","井上":"いのうえ","木村":"きむら","林":"はやし","斎藤":"さいとう","清水":"しみず","山崎":"やまざき","森":"もり","池田":"いけだ","橋本":"はしもと","阿部":"あべ","石川":"いしかわ","山下":"やました","中島":"なかじま","石井":"いしい","小川":"おがわ","前田":"まえだ","岡田":"おかだ","長谷川":"はせがわ","藤田":"ふじた","後藤":"ごとう","近藤":"こんどう","村上":"むらかみ","遠藤":"えんどう","青木":"あおき","坂本":"さかもと","西村":"にしむら",
+"太郎":"たろう","次郎":"じろう","健太":"けんた","翔":"しょう","大輔":"だいすけ","拓也":"たくや","直樹":"なおき","亮":"りょう","誠":"まこと","隆":"たかし","剛":"つよし","優":"ゆう","浩二":"こうじ","和也":"かずや","雄一":"ゆういち","蓮":"れん","陸":"りく","悠斗":"ゆうと","颯":"はやて","湊":"みなと","悠真":"ゆうま"};
+// テスト用の外国の人（ふりがな・ニックネームつき）
+const FOREIGN = {
+  en: [
+    { last: "Smith", first: "John", kLast: "すみす", kFirst: "じょん", nick: "じょにー" },
+    { last: "Brown", first: "Michael", kLast: "ぶらうん", kFirst: "まいける", nick: "まいく" },
+    { last: "Johnson", first: "Chris", kLast: "じょんそん", kFirst: "くりす", nick: "くりす" },
+    { last: "Taylor", first: "Ryan", kLast: "てーらー", kFirst: "らいあん", nick: "らいあん" },
+    { last: "Wilson", first: "Jake", kLast: "うぃるそん", kFirst: "じぇいく", nick: "じぇいく" },
+    { last: "Miller", first: "Daniel", kLast: "みらー", kFirst: "だにえる", nick: "だに" },
+  ],
+  vi: [
+    { last: "Nguyen", first: "Anh", kLast: "ぐえん", kFirst: "あいん", nick: "あん" },
+    { last: "Tran", first: "Minh", kLast: "ちゃん", kFirst: "みん", nick: "みん" },
+    { last: "Le", first: "Hoang", kLast: "れ", kFirst: "ほあん", nick: "ほあん" },
+    { last: "Pham", first: "Duc", kLast: "ふぁむ", kFirst: "どぅく", nick: "どぅっく" },
+  ],
+  ko: [
+    { last: "Kim", first: "Minjun", kLast: "きむ", kFirst: "みんじゅん", nick: "みんじゅん" },
+    { last: "Park", first: "Jiho", kLast: "ぱく", kFirst: "じほ", nick: "じほ" },
+    { last: "Lee", first: "Seojun", kLast: "い", kFirst: "そじゅん", nick: "そじゅん" },
+  ],
+};
+// テスト用の道場名（架空）
+const DOJOS = ["関谷塾", "越谷アームクラブ", "川口パワーズ", "浦和腕相撲会", "Team Iron Arm", "東京アームレスリング同好会", "草加アームズ", "千葉腕力倶楽部", "大宮アームジム", "練馬アームレスリング部", "横浜ストロングアーム", "柏アームクラブ", "春日部パワーアーム", "Team Grip"];
+Object.assign(KANA, globalThis.KANA_ADD || {});
+function act(a, d){
+  switch (a){
+    case "tab": ui.tab = d.v; window.scrollTo(0, 0); break;
+    case "br": ui.br = d.v; break;
+    case "entbr": ui.entBr = d.v; ui.entSt = "all"; ui.q = ""; ui.f.f_search = ""; ui.skipCapture = true; break;
+    case "entst": ui.entSt = d.v; ui.entBr = "all"; ui.q = ""; ui.f.f_search = ""; ui.skipCapture = true; break;
+    case "pay": return startPay(d.pid);
+    case "weigh": return askWeigh(d.pid);
+    case "selfmore": ui.selfMore = true; break;
+    case "search": doSearch(); return;
+    case "practice": if (d.v === "on") startPractice(); else ask("練習モードをやめて、本番の画面に戻りますか？<br><small>練習の記録はこのスマホに残るので、また練習モードにすると続きから使えます。</small>", "本番に戻る", stopPractice); return;
+    case "dojopick": {
+      const el = document.getElementById("f_dojo"); if (!el) return;
+      el.value = d.v; ui.f.f_dojo = d.v; markDojo();
+      // 欄のところまで戻って、入ったことがわかるように光らせる
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.remove("flashin"); void el.offsetWidth; el.classList.add("flashin");
+      return;
+    }
+    case "refresh": {
+      const hm = () => { const d = new Date(); return d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0"); };
+      if (!online) return toast("ネットにつながっていません。つながったら自動で最新になります");
+      if (mode === "gas"){
+        const before = ui.lastSync || 0;
+        toast("更新しています…");
+        poll().then(() => { flush(); toast(ui.lastSync > before ? hm() + " 最新の状態です" : "更新できませんでした。電波のよいところでもう一度押してください"); });
+        return;
+      }
+      ui.lastHtml = ""; render(); return toast(hm() + " 最新の状態です");
+    }
+    case "shownotdone": ui.entSt = "notdone"; ui.entBr = "all"; ui.q = ""; ui.f.f_search = ""; ui.recMode = null; ui.skipCapture = true; render(); goResults(); return;
+    case "passok": {
+      const el = document.getElementById("f_pass"); const v = el ? el.value.trim() : "";
+      if (!v) return toast("パスコードを入れてください");
+      gasCall("checkPass", v).then(ok => {
+        if (!ok) return toast("パスコードが違います");
+        ui.pass = v; try { localStorage.setItem("aw_pass", v); } catch (e) {}
+        toast("運営として入りました"); render(); flush();
+      }).catch(() => toast("通信できませんでした。もう一度押してください"));
+      return;
+    }
+    case "solomove": {
+      const pl = S.players[d.pid]; if (!pl) return;
+      const arm = d.k.slice(d.k.lastIndexOf("_") + 1), to = d.v.slice(0, d.v.lastIndexOf("_"));
+      const en = JSON.parse(JSON.stringify(pl.en)); en[arm] = [to];
+      const go = () => { push({ type: "edit", pid: d.pid, entries: en }); toast(nm(d.pid) + " さんを" + keyLabel(d.v) + "に移しました。トーナメントを組み直しました"); };
+      if (to === "S-75" && !pl.weighed) return choose(`<b>${nm(d.pid)}</b> さんを「${esc(keyLabel(d.v))}」に移します。<br><br><b>検量で 75kg 以下を確認しましたか？</b>`, [
+        { label: "はい（75kg以下でした）", cls: "go", fn: () => { push({ type: "weigh", pid: d.pid }); go(); } },
+        { label: "いいえ（まだ・オーバー）", cls: "ghost", fn: () => toast("検量で確認してから、もう一度押してください") }]);
+      return ask(`<b>${nm(d.pid)}</b> さんを「${esc(keyLabel(d.k))}」から<br>「<b>${esc(keyLabel(d.v))}</b>」に移しますか？<br><small>本人の了解をもらってから押してください。エントリー費は変わりません。</small>`, "移す", go);
+    }
+    case "solodrop": {
+      const pl = S.players[d.pid]; if (!pl) return;
+      const rest = pl.keys.filter(x => x !== d.k), refund = feeOf(pl) - (rest.length ? FEE_ONE : 0);
+      return ask(`<b>${nm(d.pid)}</b> さんは「${esc(keyLabel(d.k))}」に出ない、でいいですか？<br><br>返金：<b class="big2">${refund.toLocaleString()}円</b><br><small>${rest.length ? "ツーハンドからワンハンドになるので、差額を返します。" : "ほかに出るクラスがないので、全額を返します。"}</small>`, "出ない（返金する）", () => {
+        push({ type: "drop", pid: d.pid, k: d.k });
+        setTimeout(() => choose(`<div class="paybox"><div class="donettl">返金してください</div><b class="big2">${rubyName(pl, true)} さん</b><div class="myfee"><b>${refund.toLocaleString()}円</b></div><div class="sub">お金を渡したら「返金しました」を押してください</div></div>`, [{ label: "返金しました", cls: "go", fn: () => toast("記録しました") }], true), 30);
+      });
+    }
+    case "soloack": return ask(`「${esc(keyLabel(d.k))}」を、このまま<b>試合なしで1位</b>にしますか？`, "このままにする", () => push({ type: "soloack", k: d.k }));
+    case "golist": render(); goResults(); return;
+    case "clearfilt": ui.entSt = "all"; ui.entBr = "all"; ui.q = ""; ui.f.f_search = ""; ui.skipCapture = true; render(); goResults(); return;
+    case "clearsearch": ui.q = ""; ui.f.f_search = ""; ui.q = ""; ui.skipCapture = true; render(); return;
+    case "recmode": ui.recMode = d.v || null; ui.f.f_search = ""; ui.q = ""; ui.skipCapture = true; window.scrollTo(0, 0); render(); if (d.v === "yes"){ const el = document.getElementById("f_search"); if (el) el.focus(); } return;
+    case "ent": {
+      // 腕ごとに1クラスだけ（ダブルエントリーは、同じ名前でもう一度登録する）
+      ui["e" + d.arm] = d.v ? [d.v] : [];
+      break;
+    }
+    case "role": ui.role = d.v || null; ui.desk = null; ui.tab = d.v === "viewer" ? "match" : ui.tab; saveRole(); window.scrollTo(0, 0); break;
+    case "desk": ui.desk = d.v === "" ? null : d.v === "hq" ? "hq" : +d.v; ui.tab = ui.desk === "hq" ? (S.started ? "match" : "entry") : "desk"; saveRole(); window.scrollTo(0, 0); break;
+    case "fix": return startFix(S.m[+d.mid]);
+    case "help": ui.help = !ui.help; window.scrollTo(0, 0); break;
+    case "copyres": {
+      ui.resText = resultsText(d.v === "all");
+      try { navigator.clipboard.writeText(ui.resText).then(() => toast("コピーしました"), () => toast("下の文章を長押ししてコピーしてください")); }
+      catch (e) { toast("下の文章を長押ししてコピーしてください"); }
+      break;
+    }
+    case "pickmode":
+      if (d.v === "back"){ if (ui.fixedTable != null && ui.hqPick){ ui.desk = "hq"; ui.hqPick = false; } ui.step = null; ui.fixedTable = null; break; }
+      ui.desk = null; ui.step = "class"; ui.fixedTable = null; ui.hqPick = false; window.scrollTo(0, 0); break;
+    case "nextcls": ui.fixedTable = ui.desk; ui.desk = null; ui.step = "class"; window.scrollTo(0, 0); break;
+    case "hqpick": ui.fixedTable = +d.v; ui.hqPick = true; ui.desk = null; ui.step = "class"; window.scrollTo(0, 0); break;
+    case "pickcls": {
+      ui.pendKey = d.v;
+      if (ui.fixedTable != null) return confirmClaim(d.v, ui.fixedTable);
+      const where = S.claim.indexOf(d.v) >= 0 ? S.claim.indexOf(d.v) : S.tableKey.indexOf(d.v);
+      if (where >= 0) return confirmClaim(d.v, where);
+      ui.step = "table"; window.scrollTo(0, 0); break;
+    }
+    case "picktbl": return confirmClaim(ui.pendKey, +d.v);
+    case "mbtn": { const b = modalBtns && modalBtns[+d.i]; modalBtns = null; render(); if (b && b.fn) b.fn(); return; }
+    case "reg": {
+      const g = id => { const el = document.getElementById(id); return (el ? el.value : "").trim(); };
+      const p = { last: g("f_last"), first: g("f_first"), kLast: g("f_klast"), kFirst: g("f_kfirst"), dojo: g("f_dojo") };
+      // 名字か名前のどちらか1つあれば登録できる（ほかの欄は空でもOK）
+      if (!p.last && !p.first) return toast("名字か名前のどちらかを入れてください");
+      if (!p.last){ p.last = p.first; p.first = ""; p.kLast = p.kLast || p.kFirst; p.kFirst = ""; }
+      if (!(ui.eR || []).length && !(ui.eL || []).length) return toast("左腕か右腕のクラスを選んでください");
+      const entries = { L: (ui.eL || []).slice(), R: (ui.eR || []).slice() };
+      const lat = v => /^[\x00-\x7F]+$/.test(v);
+      const label = p.first ? (lat(p.last) && lat(p.first) ? p.first + " " + p.last : p.last + " " + p.first) : p.last;
+      const selfMode = !!d.self;
+      const doReg = () => {
+        ui.f = {}; ui.eR = null; ui.eL = null;
+        ["f_last","f_first","f_klast","f_kfirst","f_dojo"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+        const pid = newId();
+        push(Object.assign({ type: "add", pid, entries, self: selfMode }, p));
+        if (selfMode){ ui.my = (ui.my || []).concat([pid]); saveMy(); ui.selfMore = false; window.scrollTo(0, 0); toast("登録しました。この画面を受付で見せてください"); }
+        else { toast("「" + label.trim() + "」を登録しました"); startPay(pid); }  // −75の人は検量から
+      };
+      // 同じ人がもう登録していないか（名前・ふりがなが同じ、空白だけ違う）
+      const nz = s => String(s || "").normalize("NFKC").replace(/\s+/g, "").toLowerCase();
+      const dups = Object.keys(S.players).filter(id => { const x = S.players[id];
+        return (nz(x.last) === nz(p.last) && nz(x.first) === nz(p.first)) || (p.kLast && nz(x.kLast) === nz(p.kLast) && nz(x.kFirst) === nz(p.kFirst) && (x.kLast || x.kFirst)); });
+      if (dups.length){
+        const d0 = dups[0], x = S.players[d0];
+        const btns = selfMode ? [{ label: "このまま登録する", cls: "main", fn: doReg }]
+          : [{ label: `この登録を使う（No.${x.no}の受付に進む）`, cls: "main", fn: () => { ui.f = {}; ui.eL = null; ui.eR = null; ui.skipCapture = true; startPay(d0); } },
+             { label: "別の人として登録する", cls: "ghost", fn: doReg }];
+        return choose(`<b>すでに登録されているかもしれません</b><br><br>No.${x.no}　<b>${rubyName(x, true)}</b>${x.dojo ? "（" + esc(x.dojo) + "）" : ""}<br><span class="sm">${esc(entryText(x))}</span><br>${statusBadges(x)}<br><br><small>同じ人なら「この登録を使う」を押してください。ダブルエントリーや、同姓同名の別の人なら「別の人として登録する」を押してください。</small>`, btns);
+      }
+      doReg(); return;
+    }
+    case "edit": {
+      const pl = S.players[d.pid]; if (!pl) return;
+      ui.editPid = d.pid; ui.f = { f_last: pl.last || pl.full, f_first: pl.first || "", f_klast: pl.kLast || "", f_kfirst: pl.kFirst || "", f_dojo: pl.dojo || "" }; ui.eL = (pl.en.L || []).slice(); ui.eR = (pl.en.R || []).slice();
+      ui.skipCapture = true; render();
+      // 検量でクラスを選び直すときは、左腕のクラスのところまで動かす
+      const c = document.getElementById(d.toArm ? "arm_L" : "regcard"); if (c) c.scrollIntoView({ behavior: "smooth", block: d.toArm ? "center" : "start" }); return;
+    }
+    case "editcancel": ui.payAfterEdit = null; ui.editPid = null; ui.f = {}; ui.eL = null; ui.eR = null; ui.skipCapture = true; break;
+    case "editsave": {
+      const pl = S.players[ui.editPid]; if (!pl) return;
+      const g = id => { const el = document.getElementById(id); return (el ? el.value : "").trim(); };
+      let last = g("f_last"), first = g("f_first"), kLast = g("f_klast"), kFirst = g("f_kfirst"); const dojo = g("f_dojo");
+      if (!last && !first) return toast("名字か名前のどちらかを入れてください");
+      if (!last){ last = first; first = ""; kLast = kLast || kFirst; kFirst = ""; }
+      if (!(ui.eR || []).length && !(ui.eL || []).length) return toast("左腕か右腕のクラスを選んでください");
+      const entries = { L: (ui.eL || []).slice(), R: (ui.eR || []).slice() };
+      const changed = ["L","R"].some(x => (pl.en[x] || []).join() !== entries[x].join());
+      const cls = "<br>" + ["L","R"].map(x => armLabel(x) + "：" + (entries[x].length ? entries[x].map(clsLabel).join("・") : "出ない")).join("／");
+      // −75のクラスに新しく入るときは、検量の確認
+      const newLight = ["L","R"].flatMap(x => entries[x].filter(c => (c === "S-75" || c === "C-75") && !(pl.en[x] || []).includes(c)).map(c => clsLabel(c) + " " + armLabel(x)));
+      const pid = ui.editPid;
+      const doSave = () => {
+        push(Object.assign({ type: "edit", pid, last, first, kLast, kFirst, dojo }, changed ? { entries } : {}));
+        ui.editPid = null; ui.f = {}; ui.eL = null; ui.eR = null; ui.skipCapture = true; toast("修正しました");
+        // 検量で体重オーバー →「クラスを選び直す」から来たときは、続けてお支払いへ
+        if (ui.payAfterEdit === pid){ ui.payAfterEdit = null; setTimeout(() => startPay(pid), 50); }
+      };
+      const base = `<b>${esc(last + (first ? " " + first : ""))}</b> さんの登録を修正します。${cls}`;
+      if (newLight.length) return choose(base + `<br><br><b class="red">${newLight.join("・")} に入るので、検量（体重の確認）が必要です。</b><br>検量はパスしましたか？`, [{ label: "はい、パスしました", cls: "main", fn: doSave }]);
+      return ask(base + "<br>よろしいですか？", "修正する", doSave);
+    }
+    case "del": return ask("「" + nm(d.pid) + "」の登録を削除しますか？", "削除する", () => push({ type: "remove", pid: d.pid }));
+    case "demo": {
+      // テスト用65人（前回の大会くらい）：日本人52人（同じ名字の組・同じ名前で2回登録の人を含む）＋英語圏6人・ベトナム4人・韓国3人
+      // 4人に3人くらいに所属道場を入れる
+      const cls = CLS.map(c => c[0]);
+      const rc = () => cls[Math.floor(Math.random() * cls.length)];
+      const pick = a => a[Math.floor(Math.random() * a.length)];
+      const firsts = shuffle(DEMO_FIRST, Math.random); let fi = 0;
+      const list = [];
+      const add = (o, entries) => list.push(Object.assign({ pid: newId() + list.length, entries }, o));
+      const jp = (last, first) => ({ last, first, kLast: KANA[last] || "", kFirst: KANA[first] || "" });
+      // 両腕に出る人を多めに（同じクラス60%・左右で別のクラス10%・右だけ15%・左だけ15%（前回の大会くらい））
+      const rndEnt = () => { const r = Math.random(), c = rc(); return r < .6 ? { R: [c], L: [c] } : r < .7 ? { R: [c], L: [rc()] } : r < .85 ? { R: [c] } : { L: [c] }; };
+      // 日本人：同じ名字の組（同じクラス）
+      const dupSur = shuffle(DEMO, Math.random).slice(0, 2);
+      const c1 = rc(), c2 = rc();
+      add(jp(dupSur[0], firsts[fi++]), { L: [c1] }); add(jp(dupSur[0], firsts[fi++]), { L: [c1] }); add(jp(dupSur[0], firsts[fi++]), { L: [c1], R: [c1] });
+      add(jp(dupSur[1], firsts[fi++]), { L: [c2], R: [c2] }); add(jp(dupSur[1], firsts[fi++]), { L: [c2], R: [c2] });
+      // 同じ名前で2回登録（ダブルエントリー）
+      const dbl = jp(shuffle(DEMO.filter(s => !dupSur.includes(s)), Math.random)[0], firsts[fi++]);
+      add(Object.assign({}, dbl), { L: ["B"], R: ["B"] }); add(Object.assign({}, dbl), { L: ["A"], R: ["A"] });
+      { const used = new Set(list.map(o => o.last + o.first)); const sur = shuffle(DEMO.filter(s => s !== dbl.last), Math.random); let si = 0, guard = 0;
+        while (list.length < 52 && guard++ < 5000){ const s = sur[si++ % sur.length], f = pick(DEMO_FIRST); if (used.has(s + f)) continue; used.add(s + f); add(jp(s, f), rndEnt()); } }
+      // 外国の人：ふりがなは「全部ある」「ニックネームだけ」「空」をランダムに
+      const kanaMode = (o, nick) => { const r = Math.random(); if (r < .45) return o; if (r < .8) return Object.assign({}, o, { kLast: nick, kFirst: "" }); return Object.assign({}, o, { kLast: "", kFirst: "" }); };
+      shuffle(FOREIGN.en, Math.random).slice(0, 6).forEach(f => add(kanaMode(f, f.nick), rndEnt()));
+      shuffle(FOREIGN.vi, Math.random).slice(0, 4).forEach(f => add(kanaMode(f, f.nick), rndEnt()));
+      shuffle(FOREIGN.ko, Math.random).slice(0, 3).forEach(f => add(kanaMode(f, f.nick), rndEnt()));
+      // 所属道場（同じ人の2回分は同じ道場）
+      const withDojo = new Set(shuffle(list.map((_, i) => i), Math.random).slice(0, Math.round(list.length * 0.75)));
+      list.forEach((o, i) => { if (withDojo.has(i)) o.dojo = pick(DOJOS); });
+      const dIdx = list.findIndex(o => o.last === dbl.last && o.first === dbl.first);
+      list.forEach(o => { if (o.last === dbl.last && o.first === dbl.first) o.dojo = list[dIdx].dojo; });
+      list.forEach(o => { delete o.nick; o.paid = "cash"; o.weighed = true; });
+      // 受付のテスト用に、8人だけ「未払い」、−75の人の4人を「検量まだ（お支払いもまだ）」にしておく
+      shuffle(list.map((_, i) => i), Math.random).slice(0, 8).forEach(i => { list[i].paid = null; });
+      const light = list.filter(o => ["L","R"].some(x => (o.entries[x] || []).some(c => c === "S-75" || c === "C-75")));
+      light.slice(0, 4).forEach(o => { o.weighed = false; o.paid = null; });
+      push({ type: "addMany", list }); toast("テスト用の選手を" + list.length + "人入れました（何人かは未払い・検量まだ）"); return;
+    }
+    case "start": {
+      const all = Object.values(S.players), ok = all.filter(entryOK).length;
+      if (ok < all.length) return toast("受付が終わっていない人がいます。先に受付を済ませるか、削除してください");
+      const solo = KEYS.filter(k => all.filter(p => entryOK(p) && p.keys.includes(k)).length === 1);
+      return ask(`受付を締め切って試合を始めますか？<br><br>エントリー完了：<b>${ok}人</b>${solo.length ? `<br><b class="red">1人だけのクラス：${solo.map(keyLabel).join("・")}</b><br><small>試合開始のあと、画面の上に相談のお知らせが出ます。</small>` : ""}${all.length - ok ? `<br><b class="red">受付が終わっていない ${all.length - ok}人は、トーナメントに入りません。</b><br><small>あとで入金・検量が済んだら、まだ始まっていないクラスには入れます。</small>` : ""}`, "試合開始", () => { ui.tab = "match"; push({ type: "start" }); });
+    }
+    case "pick": {
+      const m = S.m[+d.mid]; if (!m || !canInput(m)) return;
+      return ask(`<b>${nm(d.w, m.k)}</b> さんの勝ちで確定しますか？<br><small>${esc(keyLabel(m.k))}・${POOL[m.pool]}</small>`, "確定", () => push({ type: "result", mid: m.id, w: d.w, a: m.a, b: m.b }));
+    }
+    case "wd": return ask(`<b>${nm(d.pid)}</b> さんを「${esc(keyLabel(d.k))}」から棄権にしますか？<br><small>試合中・試合待ちなら相手の勝ちになります。</small>`, "棄権にする", () => push({ type: "withdraw", pid: d.pid, k: d.k }));
+    case "finals": {
+      const used = KEYS.filter(k => Object.keys(S.br[k].ent).length);
+      const rd = used.filter(k => S.br[k].ready || S.br[k].champ).length;
+      if (rd < used.length) return toast("まだ予選中のクラスがあります。全クラスの予選が終わってから決勝を始めます");
+      const msg = "全クラスの予選が終わりました。決勝を始めますか？";
+      return ask(msg, "決勝を始める", () => push({ type: "finals" }));
+    }
+    case "sim": return ask("残りの試合を決勝まで全部ランダムで終わらせますか？<br><small>テスト用です。終わったあとは「全部リセット」で最初からやり直せます。</small>", "全部終わらせる", () => push({ type: "simulate" }));
+    case "reset": return ask("登録も試合結果も、すべて消して最初からにしますか？<br><small>テスト用のボタンです。本番では押さないでください。</small>", "全部リセット", () => push({ type: "reset" }));
+  }
+  render();
+}
+
+async function autoResults(){
+  const ms = S.m.filter(m => m.st === "p");
+  const f = S.finalOrder.map(i => S.m[i]).find(m => m.st !== "d");
+  if (f) ms.push(f);
+  if (!ms.length) return toast("結果を入れる試合がありません");
+  for (const m of ms) push({ type: "result", mid: m.id, w: Math.random() < .5 ? m.a : m.b, a: m.a, b: m.b });
+}
+
+document.getElementById("app").addEventListener("click", e => {
+  const el = e.target.closest("[data-a]"); if (!el || el.disabled) return;
+  act(el.dataset.a, el.dataset);
+});
+// 検索欄：日本語の変換中は画面を書き直さない（変換が終わったら探す）
+// 検索欄：打っている間は何もしない。「検索」ボタンかEnterで探す
+document.getElementById("app").addEventListener("input", e => { if (e.target && e.target.id === "f_search") ui.f.f_search = e.target.value; if (e.target && e.target.id === "f_dojo"){ ui.f.f_dojo = e.target.value; markDojo(); } });
+// 道場ボタンの色：上の欄と同じ名前のボタンに色をつける
+function markDojo(){ const v = (ui.f.f_dojo || "").trim(); document.querySelectorAll(".djchip").forEach(b => b.classList.toggle("on", b.dataset.v === v)); }
+document.getElementById("app").addEventListener("compositionstart", e => { if (e.target && e.target.id === "f_search") ui.composing = true; });
+document.getElementById("app").addEventListener("compositionend", e => { if (e.target && e.target.id === "f_search"){ ui.composing = false; ui.f.f_search = e.target.value; } });
+document.getElementById("app").addEventListener("keydown", e => { if (e.target && e.target.id === "f_search" && e.key === "Enter" && !e.isComposing && !ui.composing){ e.preventDefault(); doSearch(); } });
+function doSearch(){
+  const el = document.getElementById("f_search"); const v = el ? el.value : (ui.f.f_search || "");
+  ui.f.f_search = v; ui.q = v.trim();
+  if (el) el.blur();   // スマホのキーボードを閉じる
+  ui.lastHtml = ""; render();
+  goResults();
+}
+// 結果の一覧まで画面を動かす
+function goResults(){ setTimeout(() => { const r = document.getElementById("results"); if (r) r.scrollIntoView({ behavior: "smooth", block: "start" }); }, 50); }
+window.addEventListener("online", () => { online = true; render(); flush(); });
+window.addEventListener("offline", () => { online = false; render(); });
+setInterval(() => { if (outbox.length) flush(); }, 10000);
+
+// ---------- 起動 ----------
+// QRコードから開いたとき（URLの最後に ?entry）：いきなり出場登録の画面を出す
+// 運営として使っている端末は、そのまま運営のまま。試合が始まっていたら「選手・観客」の画面にする
+function openFromQR(){
+  let q = ""; try { q = location.search || ""; } catch (e) {}
+  if (!/(^|[?&])entry(=|&|$)/.test(q.replace(/^\?/, "&"))) return;
+  if (ui.role === "staff" || ui.practice) return;
+  if (S.started){ ui.role = "viewer"; ui.tab = "match"; }
+  else { ui.role = "entrant"; ui.tab = "self"; }
+  saveRole(); ui.lastHtml = ""; window.scrollTo(0, 0); render();
+}
+function startLocal(){ mode = "local"; loadLocal(); recompute(); dataReady = true; if (isAdmin() && !S.started) ui.tab = "entry"; render(); }
+(async () => {
+  render();
+  // Googleの中で動いているとき（本番用）
+  if (window.AW_API || (typeof google !== "undefined" && google.script && google.script.run)){
+    mode = "gas"; loadOutbox(); document.title = "関谷塾杯 トーナメント表";
+    try { ui.pass = localStorage.getItem("aw_pass") || ""; } catch (e) { ui.pass = ""; }
+    const timer = setTimeout(() => { if (!dataReady) toast("接続に時間がかかっています。少し待ってください"); }, 10000);
+    await poll(); clearTimeout(timer); flush();
+    try { if (localStorage.getItem("aw_practice_on") === "1") startPractice(); } catch (e) {}
+    openFromQR();
+    // 運営は3秒ごと、見る人は5秒ごとに新しい記録を見に行く（画面を閉じているときは休む）
+    let tick = 0;
+    setInterval(() => { tick++; if (document.visibilityState === "hidden") return; if (ui.role === "staff" || tick % 2 === 0) poll(); }, 2500);
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") poll(); });
+    return;
+  }
+  if (!window.claude || typeof window.claude.use !== "function"){ startLocal(); return; }
+  let d = null;
+  try { d = await window.claude.use("db"); } catch (e) { d = null; }
+  if (!d){ startLocal(); return; }
+  db = d; mode = "db"; loadOutbox();
+  try {
+    const u = await window.claude.use("user");
+    if (u && typeof u.can === "function"){ const c = await u.can("data.write"); if (c === false) canWrite = false; }
+  } catch (e) {}
+  let first = true;
+  const timer = setTimeout(() => toast("接続に時間がかかっています。表示が古い可能性があります"), 10000);
+  db.collection("events").orderBy("t").onSnapshot(snap => {
+    if (!snap.metadata.fromCache){ clearTimeout(timer); if (!dataReady){ dataReady = true; ui.deskSeenTable = undefined; } }
+    serverEvs = snap.docs.map(x => Object.assign({}, x.data(), { id: x.id }));
+    mergeEvs();
+    if (first){ first = false; if (isAdmin() && !S.started) ui.tab = "entry"; }
+    render();
+  }, err => { clearTimeout(timer); toast("データを読み込めませんでした"); });
+  mergeEvs(); render(); flush();
+})();
+</script></body></html>
