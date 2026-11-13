@@ -159,7 +159,7 @@ const CLS = [["S-75","S −75"],["S+75","S +75"],["A","A 無差別"],["B","B 無
 const ARMS = [["R","右"],["L","左"]];
 const KEYS = [];
 CLS.forEach(c => ARMS.forEach(a => KEYS.push(c[0] + "_" + a[0])));
-const TNAME = ["A台","B台","C台"];
+const TNAME = ["Ⅰの台","Ⅱの台","Ⅲの台"];
 const CLS_ORDER = ["C-75","C+75","B","A","S-75","S+75"];
 // 左を全部先に → そのあと右
 const DEFAULT_ORDER = [...CLS_ORDER.map(c => c + "_L"), ...CLS_ORDER.map(c => c + "_R")];
@@ -617,7 +617,7 @@ function record(S, k, p){
 }
 
 // ===== 画面部分 =====
-const APP_VER = "11月13日 01:20";   // 作った日時（build.sh が書きこむ）
+const APP_VER = "11月14日 02:07";   // 作った日時（build.sh が書きこむ）
 const ui = { tab: "match", br: KEYS[0], eR: null, eL: null, role: null, desk: null, f: {} };
 let evs = [], serverEvs = [], outbox = [], sentIds = new Set();
 let S = freshState(), mode = "loading", db = null, canWrite = true, note = "", lastT = 0, flushing = false;
@@ -683,7 +683,7 @@ function push(ev){
   ui.lastPush = Date.now();
   ev.t = Math.max(Date.now(), lastT + 1); lastT = ev.t;
   ev.id = newEvId();
-  if (mode === "db" || mode === "gas"){ outbox.push(ev); saveOutbox(); mergeEvs(); render(); flush(); }
+  if (mode === "db" || mode === "gas"){ outbox.push(ev); saveOutbox(); mergeEvs(); render(); flush(); setTimeout(render, 5600); }
   else { evs.push(ev); saveLocal(); recompute(); render(); }
 }
 // ---------- Google（スプレッドシート）とのやりとり ----------
@@ -820,8 +820,9 @@ function practiceBan(){ return ui.practice ? `<div class="ban practiceban"><b>�
 function banners(){
   let h = "";
   if ((mode === "db" || mode === "gas") && !online) h += `<div class="ban warn">ネットに接続されていません。入力した結果はこの端末に保存して、つながったら自動で送ります。</div>`;
-  const unsent = outbox.filter(e => !sentIds.has(e.id)).length;
-  if ((mode === "db" || mode === "gas") && unsent) h += `<div class="ban warn">未送信の結果が${unsent}件あります（自動で送ります）</div>`;
+  // 送るのに5秒以上かかっているものだけ知らせる（ふつうはすぐ送れるので出さない）
+  const late = outbox.filter(e => !sentIds.has(e.id) && Date.now() - (e.t || 0) > 5000).length;
+  if ((mode === "db" || mode === "gas") && late) h += `<div class="ban warn">電波が弱いため、まだ送れていない記録が${late}件あります。電波がつながると自動で送ります。</div>`;
   if (ui.role === "staff" && !canWrite) h += `<div class="ban">この端末では入力できません（見るだけ）</div>`;
   h += practiceBan();
   h += soloBanner();
@@ -881,9 +882,9 @@ function viewRole(){
     : `<button class="rolebtn entry" data-a="role" data-v="entrant"><b>出場登録（選手）</b><span>Entry for players</span><small>大会に出る人は、ここから自分で登録します</small></button>`;
   return `<div class="hero"><p class="big">あなたはどちらですか？</p><p class="sub">Who are you?</p>
     ${first}
-    <p class="ver" style="position:static;margin-top:6px">画面の版：${APP_VER}</p>
     <button class="rolebtn staff" data-a="role" data-v="staff"><b>運営</b><span>Staff</span><small>試合結果の入力や、選手の登録をする</small></button>
-    ${!ui.practice && mode !== "local" ? `<button class="rolebtn practice" data-a="practice" data-v="on"><b>練習モード</b><span>Practice</span><small>このスマホの中だけで、運営も選手も自由に試せます。本番の記録やほかの人には、何も影響しません</small></button>` : ""}</div>`;
+    ${!ui.practice && mode !== "local" ? `<button class="rolebtn practice" data-a="practice" data-v="on"><b>練習モード</b><span>Practice</span><small>このスマホの中だけで、運営も選手も自由に試せます。本番の記録やほかの人には、何も影響しません</small></button>` : ""}
+    <p class="ver" style="position:static;margin-top:14px">現在のバージョン：${APP_VER}</p></div>`;
 }
 // 運営のパスコード（Googleの中で動いているときだけ）
 function viewPass(){
@@ -1086,7 +1087,7 @@ function footer(){
   if (ui.role === "staff") h += `<button class="btn sm2 help" data-a="help">困ったとき</button>`;
   h += `<button class="btn sm2 refresh" data-a="refresh">⟳ 更新</button>`;
   if (isAdmin()) h += `<button class="btn sm2 danger" data-a="reset">全部リセット（テスト用）</button>`;
-  return h + `<div class="ver">画面の版：${APP_VER}</div></footer>`;
+  return h + `<div class="ver">現在のバージョン：${APP_VER}</div></footer>`;
 }
 function modal(){
   // お知らせ（toast）は別の場所に出して、画面全体を書き直さない（押している途中のボタンが消えないように）
