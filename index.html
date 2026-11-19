@@ -55,7 +55,7 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:12px;border:1px 
 .foot.sub{display:block;text-align:center}
 .btn.sm2{width:auto;margin:0;padding:9px 12px;font-size:13px;background:var(--bg);color:var(--ink)}.btn.sm2.on{background:var(--navy);color:#fff}.btn.sm2.danger{color:var(--red)}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:20;padding:20px}
-.md{background:#fff;border-radius:16px;padding:20px;max-width:380px;width:100%;font-size:16px;line-height:1.6}.md small{color:var(--sub)}
+.md{background:#fff;border-radius:16px;padding:20px;max-width:380px;width:100%;font-size:16px;line-height:1.6;max-height:88vh;overflow-y:auto}.md small{color:var(--sub)}.mdt{margin:0 0 4px}
 .mb{display:flex;gap:8px}.mb .btn{flex:1}
 .toast{pointer-events:none;position:fixed;left:50%;transform:translateX(-50%);bottom:76px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:30;max-width:90%}
 .busy{position:fixed;top:10px;right:10px;background:var(--navy);color:#fff;font-size:12px;padding:5px 10px;border-radius:8px;z-index:30}
@@ -152,6 +152,7 @@ button rt{color:inherit;font-size:.6em;font-weight:700}
 .rolebtn.practice{border-color:#c9a227;background:#fffbea}.rolebtn.practice b{color:#8a6a00}.practiceban{background:#fff3cd;color:#7a5600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
 .opt small.ongo{display:block;font-size:10px;font-weight:700;color:var(--red)}
 .ver{width:100%;text-align:center;font-size:11px;color:var(--sub);margin-top:2px}
+.djrow{align-items:flex-start}.djrow .x2{flex-shrink:0}.djsame{font-size:12px;color:var(--ok);margin-top:3px;font-weight:500}
 </style></head><body><div id="app"></div><div id="toastbox"></div><script>
 // ===== トーナメントの計算部分（全員の画面で同じ結果になるように、操作の記録から毎回計算し直す） =====
 const TABLES = 3;
@@ -178,6 +179,7 @@ function freshState(){
   const S = { players: {}, br: {}, m: [], tables: Array(TABLES).fill(null), started: false, finals: false, lastEnd: {}, finalOrder: [] };
   KEYS.forEach(k => S.br[k] = { k, ent: {}, elim: [], played: {}, byes: [], rounds: { W: [], L: [] }, elimRd: {}, ready: false, champ: null, second: null, third: null, hasF: false });
   S.order = DEFAULT_ORDER.slice(); S.tableKey = Array(TABLES).fill(null); S.claim = Array(TABLES).fill(null); S.autoAssign = false; S.idle = Array(TABLES).fill(0); S.soloAck = {};
+  S.dojoPairs = [];   // 本部が「同じ道場」とまとめた組
   return S;
 }
 
@@ -209,16 +211,24 @@ const UP = { "C-75": ["C+75"], "C+75": ["B"], "B": ["A"], "A": ["S-75", "S+75"],
 function upKeys(k){ const i = k.lastIndexOf("_"); return (UP[k.slice(0, i)] || []).map(c => c + "_" + k.slice(i + 1)); }
 // 試合開始のあとで、まだ相談が終わっていない「1人だけのクラス」
 function soloKeys(S){ return S.started ? KEYS.filter(k => Object.keys(S.br[k].ent).length === 1 && !S.soloAck[k] && !begun(S, k)) : []; }
-// 道場名を比べるための形：全角半角・大文字小文字・空白・「道場」「ジム」などの違いはそろえる
-const DOJO_WORDS = ["アームレスリング", "armwrestling", "armwrestle", "同好会", "道場", "ジム", "クラブ", "チーム", "腕相撲", "team", "gym", "club", "部", "会"];
+// 道場名を比べるための形：全角半角・大文字小文字・空白・ひらがなカタカナ・「道場」「ジム」などの違いはそろえる
+const kataToHira = s => s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+const DOJO_WORDS = ["アームレスリング", "armwrestling", "armwrestle", "同好会", "道場", "ジム", "クラブ", "チーム", "腕相撲", "team", "gym", "club", "部", "会"].map(kataToHira);
 function dojoKey(d){
-  let s = String(d || "").normalize("NFKC").toLowerCase().replace(/[\s・\-_.　]+/g, "");
+  let s = kataToHira(String(d || "").normalize("NFKC").toLowerCase().replace(/[\s・\-_.　]+/g, ""));
   if (!s || ["無所属", "なし", "無し", "none", "no", "-", "ー"].includes(s)) return "";   // 無所属どうしは「同じ道場」にしない
   const base = s;
   let changed = true;
   while (changed){ changed = false;
     for (const w of DOJO_WORDS){ if (s.length > w.length && s.endsWith(w)){ s = s.slice(0, -w.length); changed = true; } if (s.length > w.length && s.startsWith(w)){ s = s.slice(w.length); changed = true; } } }
   return s || base;
+}
+// 本部のまとめも入れた「道場のまとまり」を返す関数を作る（同じまとまりなら同じ道場とみなす）
+function dojoGroupFn(S){
+  const par = {};
+  const f = x => { while (par[x] !== undefined && par[x] !== x) x = par[x]; return x; };
+  (S.dojoPairs || []).forEach(p => { const ra = f(p.a), rb = f(p.b); if (ra !== rb){ if (ra < rb) par[rb] = ra; else par[ra] = rb; } });
+  return d => { const k = dojoKey(d); return k ? f(k) : ""; };
 }
 function needWeigh(p){ return p.keys.some(k => k.startsWith("S-75_") || k.startsWith("C-75_")); }
 function entryOK(p){ return !!p.paid && (!needWeigh(p) || p.weighed); }
@@ -332,6 +342,14 @@ function apply(S, ev){
     }
     // 1人だけのクラスを「このまま（試合なしで1位）」にする
     case "soloack": S.soloAck[ev.k] = true; break;
+    // 本部が「この2つは同じ道場」とまとめる／まとめを取り消す（次に作る組み合わせから効く）
+    case "dojomerge": {
+      const a = dojoKey(ev.a), b = dojoKey(ev.b); if (!a || !b || a === b) return;
+      S.dojoPairs = S.dojoPairs.filter(p => pk(p.a, p.b) !== pk(a, b));
+      S.dojoPairs.push({ a, b, na: String(ev.a).slice(0, 30), nb: String(ev.b).slice(0, 30) });
+      break;
+    }
+    case "dojounmerge": { const a = dojoKey(ev.a), b = dojoKey(ev.b); S.dojoPairs = S.dojoPairs.filter(p => pk(p.a, p.b) !== pk(a, b)); break; }
     case "pay": { const p = S.players[ev.pid]; if (!p) return; p.paid = ev.method === "paypay" ? "paypay" : "cash"; lateJoin(S, ev.pid); break; }
     case "unpay": { const p = S.players[ev.pid]; if (!p || (S.started && !p.excluded)) return; p.paid = null; break; }
     case "weigh": { const p = S.players[ev.pid]; if (!p) return; p.weighed = true; lateJoin(S, ev.pid); break; }
@@ -488,7 +506,9 @@ function makeRound(S, b, ids, pool, rng, t){
     pool2 = pool2.filter(p => p !== byeP);
   }
   // 組み合わせの「よくなさ」：同じ道場どうし（3点）・前に当たった人どうし（2点）。これが一番小さい組み方を選ぶ
-  const dj = p => dojoKey(S.players[p] && S.players[p].dojo);
+  // 同じ道場かどうかは、本部の「同じ道場」のまとめも入れて判断する
+  const grp = dojoGroupFn(S);
+  const dj = p => grp(S.players[p] && S.players[p].dojo);
   const pc = (x, y) => (dj(x) && dj(x) === dj(y) ? 3 : 0) + (b.played[pk(x, y)] ? 2 : 0);
   const cost = a => { let c = 0; for (let j = 0; j + 1 < a.length; j += 2) c += pc(a[j], a[j + 1]); return c; };
   // 入れ替えで少しずつよくする（並びはなるべく崩さない）
@@ -617,7 +637,7 @@ function record(S, k, p){
 }
 
 // ===== 画面部分 =====
-const APP_VER = "11月14日 02:07";   // 作った日時（build.sh が書きこむ）
+const APP_VER = "11月20日 02:52";   // 作った日時（build.sh が書きこむ）
 const ui = { tab: "match", br: KEYS[0], eR: null, eL: null, role: null, desk: null, f: {} };
 let evs = [], serverEvs = [], outbox = [], sentIds = new Set();
 let S = freshState(), mode = "loading", db = null, canWrite = true, note = "", lastT = 0, flushing = false;
@@ -799,6 +819,8 @@ function evLabel(ev){
     case "fix": return "結果の修正";
     case "withdraw": return "「" + nm(ev.pid) + "」の棄権";
     case "order": return "クラスの順番の変更";
+    case "dojomerge": return "道場名のまとめ";
+    case "dojounmerge": return "道場名のまとめの取り消し";
     case "reset": return "全部リセット";
   }
   return "";
@@ -1024,20 +1046,25 @@ function viewHelp(){
   ${q("担当のクラスが終わった", "「次のクラスを選ぶ」を押して、「次はこれ」と出ているクラスを選びます。左がまだ残っていても、左が終わったクラスの右なら始められます。")}
   ${q("台が空いているのに試合が入らない", "次の試合の選手が、ほかの台で試合中のことがあります（両腕・ダブルエントリーの人など）。画面に理由が出ているので、その試合が終わるのを待てば自動で入ります。")}
   ${q("受付でクラスを間違えた・検量で体重がオーバーした", "本部の「出場登録」で、その人の「修正する」を押してクラスを直します。試合が始まったあとでも、まだ試合が始まっていないクラスになら移れます。−75のクラスに移るときは、検量の確認が出ます。")}
-  ${q("どうしてもわからない", "Claudeに「〇台でこうなった、どうすればいい？」と聞いてください。今の試合の状況を確かめてから、どのボタンを押せばいいかを答えます。")}
+  ${q("選手が受付番号を忘れた・わからない", "受付番号のかわりに、名前やふりがなで探せます。「受付番号はありますか？」で「はい」を押して、名前を入れて「検索」を押してください。")}
+  ${q("検量はパスしたけれど、いまお金を払えない", "お金の画面で「あとで払う」を押します。検量OKは記録されたままです。払いに来たら、受付番号か名前で探して「入金」を押してください。まだ払っていない人は、絞りこみの「お金の受付（未払い）」でまとめて見られます。")}
+  ${q("出場者が1人だけのクラスがある", "試合開始のあと、本部の画面のいちばん上に黄色いお知らせが出ます。本人と相談して「上のクラスに移す」「出ない（返金）」「このままにする（試合なしで1位）」のどれかを押してください。返金の金額も画面に出ます。")}
+  ${q("画面が止まっている・ほかの人の入力が出てこない", "画面の下の「更新」を押してください。それでも変わらないときは、電波のよいところに移るか、ページを開き直してください。入力した結果は消えません。")}
+  ${q("同じ道場なのに、道場名の書き方がちがう", "本部の「出場登録」で、その人の「修正する」を押して、道場名を多いほうの書き方に直してください（例：「せきやじゅく」→「関谷塾」）。ひらがなとカタカナ、全角と半角、「道場」「ジム」などのちがいは、直さなくても自動で同じ道場とみなします。")}
   <button class="btn ghost" data-a="help">閉じる</button></div>`;
 }
 // ---------- 受付：入金と検量 ----------
-function startPay(pid){
+function startPay(pid, afterWeigh){
   const pl = S.players[pid]; if (!pl) return;
   if (entryOK(pl)) return toast(`No.${noOf(pl)} ${pl.full}さんは、もうエントリー完了です`);
   if (pl.paid && !(needWeigh(pl) && !pl.weighed)) return toast("入金済みです");
   // −75の人は、検量のあとにお支払い
   if (needWeigh(pl) && !pl.weighed) return askWeigh(pid);
   choose(`<div class="paybox"><div class="sub">受付番号 ${noOf(pl)}</div><b>${rubyName(pl, true)}</b> さん<br><span class="sm">${esc(entryText(pl))}</span>
-    <div class="payamt">${handOf(pl)}　${feeOf(pl).toLocaleString()}円</div>お金を受け取りましたか？</div>`, [
-    { label: "お金を受け取りました", cls: "main", fn: () => { push({ type: "pay", pid, method: "cash" }); setTimeout(() => showDone(pid), 30); } },
-  ]);
+    <div class="payamt">${handOf(pl)}　${feeOf(pl).toLocaleString()}円</div>お金を受け取りましたか？
+    ${afterWeigh ? `<div class="sub" style="margin-top:8px">検量OKは、もう記録してあります。<br>財布がないときなどは「あとで払う」を押してください。払いに来たら、受付番号か名前で探して「入金」を押せばOKです。</div>` : ""}</div>`,
+    [{ label: "お金を受け取りました", cls: "main", fn: () => { push({ type: "pay", pid, method: "cash" }); setTimeout(() => showDone(pid), 30); } }]
+      .concat(afterWeigh ? [{ label: "あとで払う（検量OKだけ記録）", cls: "ghost", fn: () => toast("検量OKを記録しました。お金はあとで受け取ってください") }] : []), afterWeigh);
 }
 // エントリー完了：自分で「次へ」を押すまで消えない画面
 function showDone(pid){
@@ -1053,7 +1080,7 @@ function askWeigh(pid){
   const lc = pl.keys.filter(k => k.startsWith("S-75_") || k.startsWith("C-75_")).map(keyLabel).join("・");
   choose(`<div class="paybox"><div class="sub">受付番号 ${noOf(pl)}　検量</div><b>${rubyName(pl, true)}</b> さん<br><span class="sm">${esc(entryText(pl))}</span>
     <div class="payamt" style="color:var(--navy)">${esc(lc)}</div>検量（体重の確認）はパスしましたか？</div>`, [
-    { label: "はい、パスしました", cls: "main", fn: () => { push({ type: "weigh", pid }); setTimeout(() => startPay(pid), 50); } },
+    { label: "はい、パスしました", cls: "main", fn: () => { push({ type: "weigh", pid }); setTimeout(() => startPay(pid, true), 50); } },
     { label: "いいえ（体重オーバー）", cls: "ghost red2", fn: () => weighFail(pid) },
   ]);
 }
@@ -1098,7 +1125,7 @@ function modal(){
   // ボタンが3つ以上（縦に並ぶ）ときは「やめる」をいちばん下に。2つのときは左に「やめる」
   const many = modalBtns.length > 2;
   const btns = modalBtns.slice().sort((a, b) => many ? (a.fn ? 0 : 1) - (b.fn ? 0 : 1) : (a.fn ? 1 : 0) - (b.fn ? 1 : 0));
-  return h + `<div class="ov"><div class="md"><p>${modalText}</p><div class="mb ${btns.length > 2 ? "col2" : ""}">${btns.map(b => `<button class="btn ${b.cls}" data-a="mbtn" data-i="${modalBtns.indexOf(b)}">${b.label}</button>`).join("")}</div></div></div>`;
+  return h + `<div class="ov"><div class="md"><div class="mdt">${modalText}</div><div class="mb ${btns.length > 2 ? "col2" : ""}">${btns.map(b => `<button class="btn ${b.cls}" data-a="mbtn" data-i="${modalBtns.indexOf(b)}">${b.label}</button>`).join("")}</div></div></div>`;
 }
 
 // 待っていた台に試合が入ったら、しばらく光らせて知らせる
@@ -1120,7 +1147,7 @@ function trackDesk(){
 function render(){
   trackDesk();
   const app = document.getElementById("app");
-  const FIELDS = ["f_last","f_first","f_klast","f_kfirst","f_dojo","f_search","f_pass"];
+  const FIELDS = ["f_last","f_first","f_klast","f_kfirst","f_dojo","f_search","f_pass","f_reset"];
   if (ui.skipCapture) ui.skipCapture = false;
   else FIELDS.forEach(id => { const el = document.getElementById(id); if (el) ui.f[id] = el.value; });
   const foc = document.activeElement && FIELDS.includes(document.activeElement.id) ? document.activeElement.id : null;
@@ -1332,13 +1359,20 @@ function regForm(selfMode){
     ${!selfMode && !S.started && !ed ? `<button class="btn ghost" data-a="demo">テスト用の選手を65人入れる</button>` : ""}
   </div>`;
 }
-// 受付の状態
+// 登録されている道場名を「同じ道場」のまとまりごとに集める
+// （ひらがなカタカナ・全角半角・「道場」「ジム」などの違いは自動でまとめる。本部が手でまとめたものも入れる）
+function dojoGroups(){
+  const grp = dojoGroupFn(S), cnt = {};
+  Object.values(S.players).forEach(p => { if (p.dojo && dojoKey(p.dojo)) cnt[p.dojo] = (cnt[p.dojo] || 0) + 1; });
+  const g = {};
+  Object.keys(cnt).forEach(n => { const r = grp(n); (g[r] = g[r] || []).push(n); });
+  return Object.keys(g).map(r => { const names = g[r].sort((a, b) => cnt[b] - cnt[a] || a.localeCompare(b, "ja"));
+    return { key: r, name: names[0], names, cnt, n: names.reduce((t, x) => t + cnt[x], 0) }; })
+    .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name, "ja"));
+}
 // もう登録されている道場名をボタンで出す（押すと同じ書き方で入る）
 function dojoChips(){
-  const g = {};
-  Object.values(S.players).forEach(p => { if (!p.dojo || !dojoKey(p.dojo)) return; const k = dojoKey(p.dojo); (g[k] = g[k] || {}); g[k][p.dojo] = (g[k][p.dojo] || 0) + 1; });
-  const list = Object.values(g).map(v => { const names = Object.keys(v).sort((a, b) => v[b] - v[a]); return { name: names[0], n: names.reduce((t, x) => t + v[x], 0) }; })
-    .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name, "ja")).slice(0, 24);
+  const list = dojoGroups().slice(0, 24);
   const cur = (ui.f.f_dojo || "").trim();
   const names = ["無所属"].concat(list.map(d => d.name));
   return `<div class="sub" style="margin:8px 0 4px">ここから選べます（押すと上の欄に入ります）／Tap to choose</div>
@@ -1490,8 +1524,8 @@ const FOREIGN = {
     { last: "Lee", first: "Seojun", kLast: "い", kFirst: "そじゅん", nick: "そじゅん" },
   ],
 };
-// テスト用の道場名（架空）
-const DOJOS = ["関谷塾", "越谷アームクラブ", "川口パワーズ", "浦和腕相撲会", "Team Iron Arm", "東京アームレスリング同好会", "草加アームズ", "千葉腕力倶楽部", "大宮アームジム", "練馬アームレスリング部", "横浜ストロングアーム", "柏アームクラブ", "春日部パワーアーム", "Team Grip"];
+// テスト用の道場名（架空）。書き方のゆれ（ひらがなとカタカナ、漢字とかな）も少し入れてある
+const DOJOS = ["関谷塾", "越谷アームクラブ", "川口パワーズ", "浦和腕相撲会", "Team Iron Arm", "東京アームレスリング同好会", "草加アームズ", "千葉腕力倶楽部", "大宮アームジム", "練馬アームレスリング部", "横浜ストロングアーム", "柏アームクラブ", "春日部パワーアーム", "Team Grip", "そうかアームズ", "せきやじゅく", "越谷あーむくらぶ"];
 Object.assign(KANA, globalThis.KANA_ADD || {});
 function act(a, d){
   switch (a){
@@ -1708,7 +1742,26 @@ function act(a, d){
       return ask(msg, "決勝を始める", () => push({ type: "finals" }));
     }
     case "sim": return ask("残りの試合を決勝まで全部ランダムで終わらせますか？<br><small>テスト用です。終わったあとは「全部リセット」で最初からやり直せます。</small>", "全部終わらせる", () => push({ type: "simulate" }));
-    case "reset": return ask("登録も試合結果も、すべて消して最初からにしますか？<br><small>テスト用のボタンです。本番では押さないでください。</small>", "全部リセット", () => push({ type: "reset" }));
+    case "reset": {
+      const msg = "登録も試合結果も、すべて消して最初からにしますか？<br><small>テスト用のボタンです。本番では押さないでください。</small>";
+      // 練習モード・お試し版（パスコードのない場所）では、確認だけ
+      if (mode !== "gas") return ask(msg, "全部リセット", () => push({ type: "reset" }));
+      // 本番：全員の記録が消えるので、パスコードをもう一度入れないと押せない
+      ui.f.f_reset = "";
+      choose(msg + `<br><br><b class="red">全員の画面の記録が消えます。</b><br><b>運営のパスコードを、もう一度入れてください</b>
+        <input id="f_reset" class="fi" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="パスコード" style="margin-top:8px">`, [
+        { label: "全部リセット", cls: "main", fn: () => {
+          const v = (ui.f.f_reset || "").trim(); ui.f.f_reset = "";
+          if (!v) return toast("パスコードが入っていないので、リセットはしていません");
+          gasCall("checkPass", v).then(ok => {
+            if (!ok) return toast("パスコードが違うので、リセットはしていません");
+            push({ type: "reset" }); toast("全部リセットしました");
+          }).catch(() => toast("通信できなかったので、リセットはしていません。もう一度押してください"));
+        } },
+      ]);
+      setTimeout(() => { const el = document.getElementById("f_reset"); if (el) el.focus(); }, 50);
+      return;
+    }
   }
   render();
 }
@@ -1727,7 +1780,7 @@ document.getElementById("app").addEventListener("click", e => {
 });
 // 検索欄：日本語の変換中は画面を書き直さない（変換が終わったら探す）
 // 検索欄：打っている間は何もしない。「検索」ボタンかEnterで探す
-document.getElementById("app").addEventListener("input", e => { if (e.target && e.target.id === "f_search") ui.f.f_search = e.target.value; if (e.target && e.target.id === "f_dojo"){ ui.f.f_dojo = e.target.value; markDojo(); } });
+document.getElementById("app").addEventListener("input", e => { if (e.target && e.target.id === "f_search") ui.f.f_search = e.target.value; if (e.target && e.target.id === "f_reset") ui.f.f_reset = e.target.value; if (e.target && e.target.id === "f_dojo"){ ui.f.f_dojo = e.target.value; markDojo(); } });
 // 道場ボタンの色：上の欄と同じ名前のボタンに色をつける
 function markDojo(){ const v = (ui.f.f_dojo || "").trim(); document.querySelectorAll(".djchip").forEach(b => b.classList.toggle("on", b.dataset.v === v)); }
 document.getElementById("app").addEventListener("compositionstart", e => { if (e.target && e.target.id === "f_search") ui.composing = true; });
@@ -1774,24 +1827,6 @@ function startLocal(){ mode = "local"; loadLocal(); recompute(); dataReady = tru
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") poll(); });
     return;
   }
-  if (!window.claude || typeof window.claude.use !== "function"){ startLocal(); return; }
-  let d = null;
-  try { d = await window.claude.use("db"); } catch (e) { d = null; }
-  if (!d){ startLocal(); return; }
-  db = d; mode = "db"; loadOutbox();
-  try {
-    const u = await window.claude.use("user");
-    if (u && typeof u.can === "function"){ const c = await u.can("data.write"); if (c === false) canWrite = false; }
-  } catch (e) {}
-  let first = true;
-  const timer = setTimeout(() => toast("接続に時間がかかっています。表示が古い可能性があります"), 10000);
-  db.collection("events").orderBy("t").onSnapshot(snap => {
-    if (!snap.metadata.fromCache){ clearTimeout(timer); if (!dataReady){ dataReady = true; ui.deskSeenTable = undefined; } }
-    serverEvs = snap.docs.map(x => Object.assign({}, x.data(), { id: x.id }));
-    mergeEvs();
-    if (first){ first = false; if (isAdmin() && !S.started) ui.tab = "entry"; }
-    render();
-  }, err => { clearTimeout(timer); toast("データを読み込めませんでした"); });
-  mergeEvs(); render(); flush();
+  startLocal();
 })();
 </script></body></html>
