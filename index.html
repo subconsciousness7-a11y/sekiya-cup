@@ -363,8 +363,13 @@ function apply(S, ev){
     }
     // 1人だけのクラスを「このまま（試合なしで1位）」にする
     case "soloack": S.soloAck[ev.k] = true; break;
-    // 使う台の数（3台か4台）。試合開始の前だけ変えられる
-    case "tables": if (!S.started && (ev.n === 3 || ev.n === 4)) S.ntab = ev.n; break;
+    // 使う台の数（3台か4台）。試合中でも変えられる
+    // 減らしたとき：なくなる台でやっている試合はそのまま最後まで。そのあとは新しい試合を入れない。入っていたクラスは「順番待ち」に戻す
+    case "tables": {
+      const n = ev.n; if (n !== 3 && n !== 4) return;
+      if (n < S.ntab) for (let i = n; i < TABLES; i++){ S.claim[i] = null; S.tableKey[i] = null; }
+      S.ntab = n; break;
+    }
     // 本部が「この2つは同じ道場」とまとめる／まとめを取り消す（次に作る組み合わせから効く）
     case "dojomerge": {
       const a = dojoKey(ev.a), b = dojoKey(ev.b); if (!a || !b || a === b) return;
@@ -497,9 +502,42 @@ function pair(S, b, rng, t){
     }
     if (!alive.length) return;
   }
-  const wBusy = aW > 0;
   if (!aW && W.length >= 2) makeRound(S, b, W, "W", rng, t);
-  if (!aL && !wBusy && L.length >= 2) makeRound(S, b, L, "L", rng, t);
+  if (!aL && L.length >= 2){ const Lp = lPick(S, b, L); if (Lp && Lp.length >= 2) makeRound(S, b, Lp, "L", rng, t); }
+}
+
+
+// 敗者復活戦の次の回戦に出る人を決める（一般的なダブルエリミネーションと同じ流れ）
+// ・すでに敗者復活戦に出た人（old）と、本戦で負けて新しく来た人（new）を分ける
+// ・old が new より多いときは、まず old どうしで人数を減らす
+// ・old が new 以下になったら、old と new を一緒にする
+// ・本戦の回戦がまだ途中で、その回戦から来る人数より old が多くないときは待つ
+// こうすると、本戦決勝で負けた人は敗者復活戦の最後の1試合だけで決勝に進める
+function lPick(S, b, L){
+  const inL = new Set();
+  b.rounds.L.forEach(r => r.forEach(it => { if (it.bye) inL.add(it.bye); else { inL.add(S.m[it.mid].a); inL.add(S.m[it.mid].b); } }));
+  const old = L.filter(p => inL.has(p));
+  const rdDone = r => (b.rounds.W[r] || []).every(it => it.bye || S.m[it.mid].st === "d");
+  const dropRd = p => { const m = S.m.find(x => x.k === b.k && x.pool === "W" && x.st === "d" && x.w !== p && (x.a === p || x.b === p)); return m ? m.rd : -1; };
+  const nw = L.filter(p => !inL.has(p));
+  const nc = nw.filter(p => { const r = dropRd(p); return r < 0 || rdDone(r); });
+  const curW = b.rounds.W.length ? b.rounds.W[b.rounds.W.length - 1] : null;
+  const wOpen = curW && !rdDone(b.rounds.W.length - 1);
+  if (nc.length){
+    // 本戦の早い回戦で負けた人から順に合流する（1回にまとめて合流させない）
+    const rds = [...new Set(nc.map(dropRd))].sort((x, y) => x - y);
+    let first = nc.filter(p => dropRd(p) === rds[0]);
+    if (old.length > first.length && old.length >= 2) return old;
+    // 人数が足りなくて試合が組めないときは、次の回戦で負けた人も入れる
+    for (let i = 1; i < rds.length && old.length + first.length < 2; i++) first = first.concat(nc.filter(p => dropRd(p) === rds[i]));
+    return old.concat(first);
+  }
+  if (wOpen){
+    const coming = curW.filter(it => !it.bye).length;
+    if (old.length > coming && old.length >= 2) return old;
+    return null;
+  }
+  return old.length >= 2 ? old : (L.length >= 2 ? L : null);
 }
 
 function makeRound(S, b, ids, pool, rng, t){
@@ -660,7 +698,7 @@ function record(S, k, p){
 }
 
 // ===== 画面部分 =====
-const APP_VER = "11月22日 02:46";   // 作った日時（build.sh が書きこむ）
+const APP_VER = "11月26日 10:30";   // 作った日時（build.sh が書きこむ）
 const ui = { tab: "match", br: KEYS[0], eR: null, eL: null, role: null, desk: null, f: {} };
 let evs = [], serverEvs = [], outbox = [], sentIds = new Set();
 let S = freshState(), mode = "loading", db = null, canWrite = true, note = "", lastT = 0, flushing = false;
@@ -995,6 +1033,13 @@ function viewDesk(){
   const flash = ui.flashUntil && Date.now() < ui.flashUntil;
   let h = `<div class="dh"><b>${TNAME[i]}</b>${k ? `<span class="tk">${esc(keyLabel(k))}</span>` : ""}</div>`;
   if (flash) h += `<div class="flash">待っていた選手の試合が終わったので、<br>この台の試合を始められます</div>`;
+  // 本部が台の数を減らして、この台を使わなくなったとき
+  if (i >= S.ntab){
+    const mid = S.tables[i];
+    if (mid != null) return h + `<div class="card center"><p class="big">${TNAME[i]}は、この試合で終わりです</p><p class="sub">本部が台の数を減らしました。この試合の結果を入れたら、${TNAME[i]}には次の試合は入りません。</p></div>${matchCard(S.m[mid], "いまの試合")}`;
+    return h + `<div class="card center"><p class="big">${TNAME[i]}は使わなくなりました</p><p class="sub">本部が台の数を${S.ntab}台に減らしました。ほかの台を手伝うときは「担当を変える」を押してください。</p>
+      <button class="btn main" data-a="pickmode" data-v="table">担当を変える</button></div>`;
+  }
   if (k && used(S, k) && prelimDone(S.br[k])){
     h += `<div class="card center"><p class="big">${esc(keyLabel(k))}の予選が終わりました</p><p class="sub">次に${TNAME[i]}でやるクラスを選んでください。</p>
       <button class="btn main" data-a="nextcls">次のクラスを選ぶ</button></div>`;
@@ -1236,10 +1281,11 @@ function viewMatch(){
     h += `<h2>予選</h2>`;
     // 選手・観客の画面では、いま試合をしている台だけ出す
     if (!isAdmin() && !S.tables.some(x => x != null)) h += `<div class="card center sub">いま試合中の台はありません。次の試合が始まるまでお待ちください。</div>`;
-    for (let i = 0; i < S.ntab; i++){
+    for (let i = 0; i < TABLES; i++){
+      if (i >= S.ntab && S.tables[i] == null) continue;   // 使わない台（試合が残っているときだけ出す）
       const mid = S.tables[i], c = S.tableKey[i];
       if (!isAdmin() && mid == null) continue;
-      h += `<div class="tg"><div class="th"><b>${TNAME[i]}</b>${c ? `<span class="tk">${esc(keyLabel(c))}</span>` : `<span class="sm">${isAdmin() ? "クラス未選択" : "準備中"}</span>`}${isAdmin() ? `<button class="x2 thb" data-a="hqpick" data-v="${i}">クラスを選ぶ</button>` : ""}</div>`;
+      h += `<div class="tg"><div class="th"><b>${TNAME[i]}</b>${i >= S.ntab ? `<span class="sm red">この試合で終わり</span>` : ""}${c ? `<span class="tk">${esc(keyLabel(c))}</span>` : `<span class="sm">${isAdmin() ? "クラス未選択" : "準備中"}</span>`}${isAdmin() ? `<button class="x2 thb" data-a="hqpick" data-v="${i}">クラスを選ぶ</button>` : ""}</div>`;
       h += mid == null ? `<div class="mc empty"><div class="sub center" style="padding-top:12px">${isAdmin() ? "空き" : "次の試合の準備中"}</div>${c && !prelimDone(S.br[c]) ? `<div class="center" style="padding:0 12px">${waitReason(i, c)}</div>` : ""}</div>` : matchCard(S.m[mid], "いまの試合");
       const q = tableQueue(S, i);
       if (q.length) h += `<div class="nx"><span class="sm">次</span>${q.slice(0, 2).map(m => `<span>${nm(m.a, m.k)} vs ${nm(m.b, m.k)}<small>${esc(keyLabel(m.k))}・${POOL[m.pool]}</small></span>`).join("")}</div>`;
@@ -1260,6 +1306,11 @@ function viewMatch(){
     const done = S.m.filter(m => m.st === "d").sort((x, y) => (y.te || 0) - (x.te || 0)).slice(0, 8);
     if (done.length) h += `<div class="card"><div class="lbl">最近の結果（まちがえたら「修正する」）</div>${done.map(m => resultRow(m, true)).join("")}
       <div class="sub" style="margin-top:6px">もっと前の結果は「トーナメント表」のタブから修正できます。</div></div>`;
+  }
+  // 使う台の数（試合中でも変えられる）
+  if (isAdmin()){
+    h += `<div class="card center"><div class="tblpick"><span class="sl">使う台の数</span><div class="opts">${[3, 4].map(n => `<button class="opt ${S.ntab === n ? "on" : ""}" data-a="ntab" data-v="${n}">${n}台</button>`).join("")}</div></div>
+      <p class="sub">台が増えたとき・減ったときに、試合の途中でも変えられます。</p></div>`;
   }
   if (isAdmin()) h += `<div class="card center"><button class="btn ghost" data-a="sim">テスト用：決勝まで全部ランダムで終わらせる</button></div>`;
   return h;
@@ -1308,7 +1359,7 @@ function viewClassBody(){
   if (!ids.length){ return h + `<p class="sub">このクラスの出場者はまだいません。</p></div>`; }
   h += `</div>`;
   if (!S.started){ return h + `<div class="card sub center">試合が始まるとトーナメント表が出ます。</div>`; }
-  h += `<div class="brnote">次の相手は、前の回戦が全部終わってから決まります（同じ道場の人や、一度当たった人とは、なるべく当たらないようにするため）</div>`;
+  h += `<div class="brnote">次の相手は、前の試合が終わってから決まります（同じ道場の人や、一度当たった人とは、なるべく当たらないようにするため）</div>`;
   h += whoPanel(b) + bracketView(b, "W") + bracketView(b, "L");
   const fins = S.m.filter(m => m.k === b.k && (m.pool === "F" || m.pool === "F2"));
   if (fins.length || b.ready){
@@ -1475,9 +1526,11 @@ function dojoGroups(){
 }
 // もう登録されている道場名をボタンで出す（押すと同じ書き方で入る）
 function dojoChips(){
-  const list = dojoGroups().slice(0, 24);
+  // 「無所属」と「関谷塾」は、だれも登録していなくても最初から出しておく
+  const fixed = ["無所属", "関谷塾"], fk = fixed.map(dojoKey).filter(Boolean);
+  const list = dojoGroups().filter(d => !fk.includes(d.key)).slice(0, 24);
   const cur = (ui.f.f_dojo || "").trim();
-  const names = ["無所属"].concat(list.map(d => d.name));
+  const names = fixed.concat(list.map(d => d.name));
   return `<div class="sub" style="margin:8px 0 4px">ここから選べます（押すと上の欄に入ります）／Tap to choose</div>
     <div class="djchips">${names.map(n => `<button type="button" class="djchip ${n === cur ? "on" : ""}" data-a="dojopick" data-v="${esc(n)}">${esc(n)}</button>`).join("")}</div>`;
 }
@@ -1634,8 +1687,8 @@ const FOREIGN = {
     { last: "Lee", first: "Seojun", kLast: "い", kFirst: "そじゅん", nick: "そじゅん" },
   ],
 };
-// テスト用の道場名（架空）。書き方のゆれ（ひらがなとカタカナ、漢字とかな）も少し入れてある
-const DOJOS = ["関谷塾", "越谷アームクラブ", "川口パワーズ", "浦和腕相撲会", "Team Iron Arm", "東京アームレスリング同好会", "草加アームズ", "千葉腕力倶楽部", "大宮アームジム", "練馬アームレスリング部", "横浜ストロングアーム", "柏アームクラブ", "春日部パワーアーム", "Team Grip", "そうかアームズ", "せきやじゅく", "越谷あーむくらぶ"];
+// テスト用の道場名（架空）
+const DOJOS = ["関谷塾", "越谷アームクラブ", "川口パワーズ", "浦和腕相撲会", "Team Iron Arm", "東京アームレスリング同好会", "草加アームズ", "千葉腕力倶楽部", "大宮アームジム", "練馬アームレスリング部", "横浜ストロングアーム", "柏アームクラブ", "春日部パワーアーム", "Team Grip"];
 Object.assign(KANA, globalThis.KANA_ADD || {});
 function act(a, d){
   switch (a){
@@ -1647,7 +1700,16 @@ function act(a, d){
     case "weigh": return askWeigh(d.pid);
     case "selfmore": ui.selfMore = true; break;
     case "who": ui.who = d.p ? { p: d.p, k: d.k } : null; render(); if (d.p){ const c = document.getElementById("whocard"); if (c) c.scrollIntoView({ behavior: "smooth", block: "start" }); } return;
-    case "ntab": { const n = +d.v; if (S.started || S.ntab === n) return; push({ type: "tables", n }); toast("使う台を" + n + "台にしました（" + TNAME.slice(0, n).join("・") + "）"); return; }
+    case "ntab": {
+      const n = +d.v; if (S.ntab === n) return;
+      const done = () => { push({ type: "tables", n }); toast("使う台を" + n + "台にしました（" + TNAME.slice(0, n).join("・") + "）"); };
+      if (!S.started) return done();
+      const k = n < S.ntab ? (S.claim[n] || S.tableKey[n]) : null;
+      const playing = n < S.ntab && S.tables[n] != null;
+      return ask(n > S.ntab
+        ? `使う台を<b>${n}台</b>に増やしますか？<br><small>${TNAME[n - 1]}が使えるようになります。台の担当の人は「台の担当」から${TNAME[n - 1]}を選んでください。</small>`
+        : `使う台を<b>${n}台</b>に減らしますか？<br><small>${TNAME[n]}は使わなくなります。${playing ? `いま${TNAME[n]}でやっている試合は、そのまま最後までやって結果を入れてください。そのあとは${TNAME[n]}に試合は入りません。` : ""}${k ? `${TNAME[n]}に入っていた「${esc(keyLabel(k))}」は順番待ちに戻り、ほかの台で続きができます。` : ""}試合の結果や組み合わせは変わりません。</small>`, n + "台にする", done);
+    }
     case "big": {
       // 文字の大きさを変えても、いま見ているところ（画面のまん中あたり）が同じ場所に見えるようにする
       const all = () => Array.from(document.querySelectorAll("#app *"));
